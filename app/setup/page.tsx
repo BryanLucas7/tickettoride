@@ -7,7 +7,7 @@ export default function SetupPage() {
   const router = useRouter()
   const [jogadores, setJogadores] = useState([{ nome: "", cor: "VERMELHO" }])
 
-  const cores = ["VERMELHO", "AZUL", "VERDE", "AMARELO", "PRETO", "LARANJA"]
+  const cores = ["VERMELHO", "AZUL", "VERDE", "AMARELO", "PRETO"]
 
   const adicionarJogador = () => {
     if (jogadores.length < 5) {
@@ -27,7 +27,7 @@ export default function SetupPage() {
     setJogadores(novosJogadores)
   }
 
-  const iniciarJogo = () => {
+  const iniciarJogo = async () => {
   const todosPreenchidos = jogadores.every((j) => j.nome.trim() !== "")
   if (!todosPreenchidos) {
     alert("Por favor, preencha o nome de todos os jogadores")
@@ -39,8 +39,69 @@ export default function SetupPage() {
     return
   }
 
-  localStorage.setItem("jogadores", JSON.stringify(jogadores))
-  router.push("/bilhetes-destino") // Mudança aqui!
+  // Validação de cores duplicadas
+  const coresUsadas = jogadores.map(j => j.cor)
+  const coresDuplicadas = coresUsadas.filter((cor, index) => coresUsadas.indexOf(cor) !== index)
+  if (coresDuplicadas.length > 0) {
+    alert("Cada jogador deve ter uma cor diferente! Cores duplicadas: " + coresDuplicadas.join(", "))
+    return
+  }
+
+  try {
+    // LIMPAR DADOS ANTIGOS ANTES DE CRIAR NOVO JOGO
+    console.log('🧹 Limpando dados antigos do localStorage...')
+    localStorage.removeItem("gameId")
+    localStorage.removeItem("jogadores")
+    
+    // Detectar se está no Codespace ou local
+    const isCodespace = window.location.hostname.includes('app.github.dev')
+    const backendPort = '8000'
+    
+    let backendUrl
+    if (isCodespace) {
+      const baseUrl = window.location.hostname.replace(/-300[0-9]/, `-${backendPort}`)
+      backendUrl = `${window.location.protocol}//${baseUrl}`
+    } else {
+      backendUrl = `http://localhost:${backendPort}`
+    }
+
+    // Criar jogo no backend
+    console.log('🎮 Criando novo jogo em:', backendUrl)
+    const response = await fetch(`${backendUrl}/games`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        numero_jogadores: jogadores.length,
+        jogadores: jogadores.map(j => ({
+          nome: j.nome,
+          cor: j.cor
+        }))
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Erro ao criar jogo: ${response.status}`)
+    }
+
+    const gameData = await response.json()
+    console.log('✅ Jogo criado com sucesso:', gameData)
+
+    // Salvar gameId e jogadores com IDs no localStorage
+    localStorage.setItem("gameId", gameData.game_id)
+    localStorage.setItem("jogadores", JSON.stringify(gameData.jogadores))
+    console.log('💾 Dados salvos no localStorage:', {
+      gameId: gameData.game_id,
+      numJogadores: gameData.jogadores.length
+    })
+
+    // Ir para tela de bilhetes
+    router.push("/bilhetes-destino")
+  } catch (error) {
+    console.error("❌ Erro ao criar jogo:", error)
+    alert(`Erro ao criar jogo: ${error.message}\n\nCertifique-se de que o backend Python está rodando na porta 8000`)
+  }
 }
 
   return (
@@ -70,11 +131,14 @@ export default function SetupPage() {
                     onChange={(e) => atualizarJogador(index, "cor", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    {cores.map((cor) => (
-                      <option key={cor} value={cor}>
-                        {cor}
-                      </option>
-                    ))}
+                    {cores.map((cor) => {
+                      const corJaUsada = jogadores.some((j, i) => i !== index && j.cor === cor)
+                      return (
+                        <option key={cor} value={cor} disabled={corJaUsada}>
+                          {cor} {corJaUsada ? "(em uso)" : ""}
+                        </option>
+                      )
+                    })}
                   </select>
                 </div>
                 {jogadores.length > 2 && (

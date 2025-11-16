@@ -3,6 +3,13 @@
 # dependencies
 /node_modules
 
+# python envs & caches
+venv/
+backend/venv/
+**/__pycache__/
+**/.pytest_cache/
+*.py[cod]
+
 # next.js
 /.next/
 /out/
@@ -19,9 +26,51 @@ yarn-error.log*
 # env files
 .env*
 
+# platform metadata
+*:Zone.Identifier
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+backend/app/.games_cache.pkl
+
+# local playgrounds / scripts
+backend/app/main.py
+
+# editor settings
+.vscode/
+*.code-workspace
+.idea/
+.vs/
+
+# os noise
+.DS_Store
+Thumbs.db
+
+# js/next caches
+.eslintcache
+.turbo/
+.swc/
+.parcel-cache/
+
+# python tooling & coverage
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+.python-version
+.coverage
+coverage/
+htmlcov/
+
+# generic logs
+*.log
+
+# tests and local tooling that should stay private
+backend/app/test_*.py
+backend/app/run_all_tests.py
+.vscode/launch.json
+.github/chatmodes/Archon.chatmode.md

@@ -1,11 +1,38 @@
 "use client"
 
-import { useState } from 'react';
-import { CIDADES, ROTAS, CORES, type Cidade, type Rota } from '@/app/data/mapaBrasil';
+import { useState, type ReactNode } from 'react'
+import { CIDADES, ROTAS, CORES, type Cidade, type Rota } from '@/app/data/mapaBrasil'
 
-export default function Board() {
-  const [rotaSelecionada, setRotaSelecionada] = useState<Rota | null>(null);
-  const [cidadeHover, setCidadeHover] = useState<string | null>(null);
+// Interface para rota com informações do jogo
+interface RotaDoJogo {
+  id: string
+  cidadeA: string
+  cidadeB: string
+  cor: string
+  comprimento: number
+  proprietario_id: string | null
+  proprietario_nome: string | null
+  proprietario_cor: string | null
+  conquistada: boolean
+}
+
+interface BoardProps {
+  rotasDoJogo?: RotaDoJogo[]
+  rotaSelecionadaId?: string | null
+  onRotaSelecionada?: (rotaId: string | null) => void
+  renderRotaDetalhes?: (dados: {
+    rotaMapa: Rota
+    rotaDoJogo?: RotaDoJogo
+  }) => ReactNode
+}
+
+export default function Board({ rotasDoJogo = [], rotaSelecionadaId = null, onRotaSelecionada, renderRotaDetalhes }: BoardProps) {
+  const [cidadeHover, setCidadeHover] = useState<string | null>(null)
+
+  // Função para encontrar informações de uma rota do jogo
+  const encontrarRotaDoJogo = (rotaId: string): RotaDoJogo | undefined => {
+    return rotasDoJogo.find(r => r.id === rotaId)
+  }
 
 
   
@@ -24,8 +51,21 @@ export default function Board() {
   };
 
   const handleRotaClick = (rota: Rota) => {
-    setRotaSelecionada(rota);
-  };
+    const rotaInfo = encontrarRotaDoJogo(rota.id)
+    if (rotaInfo?.conquistada) {
+      return
+    }
+
+    const novoSelecionado = rotaSelecionadaId === rota.id ? null : rota.id
+    onRotaSelecionada?.(novoSelecionado)
+  }
+
+  const rotaSelecionada = rotaSelecionadaId
+    ? ROTAS.find((rota) => rota.id === rotaSelecionadaId) ?? null
+    : null
+  const rotaSelecionadaInfo = rotaSelecionada
+    ? encontrarRotaDoJogo(rotaSelecionada.id)
+    : undefined
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4">
@@ -47,6 +87,11 @@ export default function Board() {
             className="w-full h-auto border-2 border-gray-300 rounded-lg bg-sky-100" 
             viewBox="0 0 700 700"
           >
+            <defs>
+              <filter id="routeBadgeShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1.2" floodColor="#000000" floodOpacity="0.25" />
+              </filter>
+            </defs>
             {/* Imagem de fundo do mapa do Brasil */}
               <image
                 href="/images/mapa-brasil.png"
@@ -65,10 +110,38 @@ export default function Board() {
               if (!cidadeA || !cidadeB) return null;
               
               const pontoMedio = calcularPontoMedio(rota);
-              const isSelected = rotaSelecionada?.id === rota.id;
+              const isSelected = rotaSelecionadaId === rota.id
+              const isWhiteRoute = rota.cor === 'BRANCO'
+              
+              // Busca informações da rota do jogo (proprietário)
+              const rotaInfo = encontrarRotaDoJogo(rota.id);
+              const conquistada = rotaInfo?.conquistada || false;
+              const corProprietario = rotaInfo?.proprietario_cor;
+              const numeroTextColor = isWhiteRoute ? CORES.PRETO : CORES[rota.cor]
+              const numeroTextStroke = 'none'
+              const numeroTextStrokeWidth = 0
+              const circleFillColor = conquistada && corProprietario ? corProprietario : 'white'
+              const circleStrokeColor = isWhiteRoute ? '#111827' : CORES[rota.cor]
+              const circleFilter = isWhiteRoute ? 'url(#routeBadgeShadow)' : undefined
 
               return (
                 <g key={rota.id}>
+                  {/* Borda do proprietário (se conquistada) */}
+                  {conquistada && corProprietario && (
+                    <line
+                      x1={cidadeA.x}
+                      y1={cidadeA.y}
+                      x2={cidadeB.x}
+                      y2={cidadeB.y}
+                      stroke={corProprietario}
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      opacity="0.5"
+                      className="pointer-events-none"
+                    />
+                  )}
+                  
+                  {/* Linha principal da rota */}
                   <line
                     x1={cidadeA.x}
                     y1={cidadeA.y}
@@ -81,16 +154,20 @@ export default function Board() {
                     onClick={() => handleRotaClick(rota)}
                   />
                   
+                  {/* Círculo central */}
                   <circle
                     cx={pontoMedio.x}
                     cy={pontoMedio.y}
                     r="10"
-                    fill="white"
-                    stroke={CORES[rota.cor]}
+                    fill={circleFillColor}
+                    stroke={circleStrokeColor}
                     strokeWidth="2"
+                    filter={circleFilter}
                     onClick={() => handleRotaClick(rota)}
                     className="cursor-pointer"
                   />
+                  
+                  {/* Texto do comprimento */}
                   <text
                     x={pontoMedio.x}
                     y={pontoMedio.y}
@@ -98,7 +175,11 @@ export default function Board() {
                     dominantBaseline="middle"
                     fontSize="14"
                     fontWeight="bold"
-                    fill={CORES[rota.cor]}
+                    fill={numeroTextColor}
+                    stroke={numeroTextStroke}
+                    strokeWidth={numeroTextStrokeWidth}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="pointer-events-none"
                   >
                     {rota.comprimento}
@@ -172,9 +253,37 @@ export default function Board() {
                     {rotaSelecionada.comprimento} vagões
                   </p>
                 </div>
+                
+                {/* Informações do proprietário */}
+                <div className="col-span-2 mt-2 pt-4 border-t-2 border-gray-300 space-y-4">
+                  {rotaSelecionadaInfo?.conquistada && rotaSelecionadaInfo.proprietario_nome ? (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">Conquistada por:</p>
+                      <div
+                        className="flex items-center gap-3 bg-white p-3 rounded-lg border-2"
+                        style={{ borderColor: rotaSelecionadaInfo.proprietario_cor || '#9CA3AF' }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-full"
+                          style={{ backgroundColor: rotaSelecionadaInfo.proprietario_cor || '#9CA3AF' }}
+                        />
+                        <span className="font-bold text-lg text-gray-900">
+                          {rotaSelecionadaInfo.proprietario_nome}
+                        </span>
+                        <span className="ml-auto text-green-600 font-semibold">✓ Conquistada</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 italic text-center">
+                      🔓 Rota disponível para conquista
+                    </p>
+                  )}
+
+                  {renderRotaDetalhes?.({ rotaMapa: rotaSelecionada, rotaDoJogo: rotaSelecionadaInfo })}
+                </div>
               </div>
-              <button 
-                onClick={() => setRotaSelecionada(null)}
+              <button
+                onClick={() => onRotaSelecionada?.(null)}
                 className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Fechar

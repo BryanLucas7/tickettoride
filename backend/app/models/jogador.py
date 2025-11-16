@@ -26,6 +26,18 @@ class Jogador:
         self.mao.adicionarCarta(carta)
         self.cartasVagao.append(carta)
 
+    def removerCartasVagao(self, cartas: List):
+        """Remove cartas tanto da mão quanto do inventário plano."""
+
+        if not self.mao.removerCartas(cartas):
+            return False
+
+        for carta in cartas:
+            if carta in self.cartasVagao:
+                self.cartasVagao.remove(carta)
+
+        return True
+
     def comprarBilhetesDestino(self, bilhetes: List[BilheteDestino]) -> List[BilheteDestino]:
         """Compra bilhetes de destino
         

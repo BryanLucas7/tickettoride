@@ -6,19 +6,6 @@ export default function Page() {
           <h1 className="text-6xl font-bold text-gray-900 mb-6">Ticket to Ride</h1>
           <p className="text-xl text-gray-600 mb-12">Aventure-se em uma jornada épica de trens pelo mundo</p>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {/* Backend Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-
-            </div>
-
-            {/* Frontend Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-
-
-            </div>
-          </div>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/setup"

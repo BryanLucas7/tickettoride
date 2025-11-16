@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
+
+# Import local types lazily to avoid circulars during typing
+from .validador_rotas_duplas import ValidadorRotasDuplas
 from .cidade import Cidade
 from .rota import Rota
 
@@ -7,6 +10,7 @@ from .rota import Rota
 class Tabuleiro:
     cidades: List[Cidade] = field(default_factory=list)
     rotas: List[Rota] = field(default_factory=list)
+    validador_duplas: Optional[ValidadorRotasDuplas] = None
 
     def obterRotasDisponiveis(self, rota) -> List[Rota]:
         """Retorna todas as rotas disponíveis (não reivindicadas)"""

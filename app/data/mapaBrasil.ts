@@ -10,7 +10,7 @@ export const CORES = {
   AMARELO: '#FBBF24',
   PRETO: '#1F2937',
   LARANJA: '#EA580C',
-  ROXO: '#944494ff',
+  ROXO: '#8B5CF6',
   BRANCO: '#ffffffff',
   CINZA: '#b7b7b7ff',
 
@@ -66,8 +66,8 @@ export const ROTAS: Rota[] = [
   // Centro-Oeste
 
   { id: 'R08', cidadeA: 'CAMPO_GRANDE', cidadeB: 'CUIABA', cor: 'LARANJA', comprimento: 3 },
-  { id: 'R09', cidadeA: 'CAMPO_GRANDE', cidadeB: 'BRASILIA', cor: 'CINZA', comprimento: 3 },
-  { id: 'R09', cidadeA: 'CUIABA', cidadeB: 'BRASILIA', cor: 'PRETO', comprimento: 4 },
+  { id: 'R09', cidadeA: 'CAMPO_GRANDE', cidadeB: 'BRASILIA', cor: 'BRANCO', comprimento: 3 },
+  { id: 'R09B', cidadeA: 'CUIABA', cidadeB: 'BRASILIA', cor: 'PRETO', comprimento: 4 },
   { id: 'R10', cidadeA: 'PALMAS', cidadeB: 'BRASILIA', cor: 'VERDE', comprimento: 3 },
   { id: 'R11', cidadeA: 'PALMAS', cidadeB: 'CUIABA', cor: 'AMARELO', comprimento: 5 },
   { id: 'R12', cidadeA: 'PALMAS', cidadeB: 'MANAUS', cor: 'ROXO', comprimento: 6 },
@@ -78,15 +78,15 @@ export const ROTAS: Rota[] = [
   
   // Nordeste
   { id: 'R17', cidadeA: 'BRASILIA', cidadeB: 'SALVADOR', cor: 'VERDE', comprimento: 4 },
-  { id: 'R18', cidadeA: 'SALVADOR', cidadeB: 'RECIFE', cor: 'CINZA', comprimento: 4 },
-  { id: 'R19', cidadeA: 'RECIFE', cidadeB: 'FORTALEZA', cor: 'CINZA', comprimento: 2 },
+  { id: 'R18', cidadeA: 'SALVADOR', cidadeB: 'RECIFE', cor: 'BRANCO', comprimento: 4 },
+  { id: 'R19', cidadeA: 'RECIFE', cidadeB: 'FORTALEZA', cor: 'BRANCO', comprimento: 2 },
   
   // Norte
   { id: 'R20', cidadeA: 'FORTALEZA', cidadeB: 'BELEM', cor: 'CINZA', comprimento: 5 },
   { id: 'R21', cidadeA: 'BELEM', cidadeB: 'MANAUS', cor: 'CINZA', comprimento: 6 },
   { id: 'R22', cidadeA: 'MANAUS', cidadeB: 'CUIABA', cor: 'CINZA', comprimento: 5 },
   { id: 'R23', cidadeA: 'RIO_BRANCO', cidadeB: 'MANAUS', cor: 'LARANJA', comprimento: 5 },
-  { id: 'R24', cidadeA: 'RIO_BRANCO', cidadeB: 'CUIABA', cor: 'CINZA', comprimento: 5 },
+  { id: 'R24', cidadeA: 'RIO_BRANCO', cidadeB: 'CUIABA', cor: 'ROXO', comprimento: 5 },
   
   // Rotas duplas
   //{ id: 'R19', cidadeA: 'PORTO_ALEGRE', cidadeB: 'CURITIBA', cor: 'AZUL', comprimento: 3 },
