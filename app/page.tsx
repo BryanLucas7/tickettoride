@@ -13,12 +13,6 @@ export default function Page() {
             >
               Iniciar Novo Jogo
             </a>
-            <a
-              href="/documentacao"
-              className="bg-white hover:bg-gray-50 text-blue-600 font-semibold text-lg px-8 py-3 rounded-lg border-2 border-blue-600 transition-colors"
-            >
-              Ver Documentação
-            </a>
           </div>
 
           
