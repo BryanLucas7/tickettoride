@@ -65,6 +65,14 @@ Os seguintes **padrões de projeto GoF** foram implementados:
 5. **Factory Method Pattern** - Criação de baralhos e cartas
 6. **State Pattern** - Gerenciamento de estados do turno
 
+### ✅ Verificação de Conformidade
+
+O projeto foi verificado quanto à implementação correta de todos os princípios e padrões:
+
+- 📋 **[Checklist de Verificação](docs/CHECKLIST_VERIFICACAO.md)** - Análise detalhada da implementação
+  - ✅ **GRASP:** 9/9 princípios (100%)
+  - ✅ **GoF:** 6/6 padrões (100%)
+
 ---
 
 ## 🚀 Como Rodar o Projeto
