@@ -12,8 +12,8 @@ Aplica padrões:
 
 from abc import ABC, abstractmethod
 from typing import List, Dict
-from .carta_vagao import CartaVagao
-from .cor import Cor
+from ..entities.carta_vagao import CartaVagao
+from ..entities.cor import Cor
 
 class RotaValidationStrategy(ABC):
     """Interface base para estratégias de validação de rota

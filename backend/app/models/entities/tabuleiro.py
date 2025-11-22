@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 # Import local types lazily to avoid circulars during typing
-from .validador_rotas_duplas import ValidadorRotasDuplas
+from ..strategies.validador_rotas_duplas import ValidadorRotasDuplas
 from .cidade import Cidade
 from .rota import Rota
 

@@ -28,10 +28,10 @@ Critérios de Desempate (em ordem):
 
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional
-from .pathfinder import VerificadorBilhetes
+from .pathfinder import PathFinder
 from .longest_path import LongestPathCalculator
-from .rota import Rota
-from .bilhete_destino import BilheteDestino
+from ..entities.rota import Rota
+from ..entities.bilhete_destino import BilheteDestino
 
 
 @dataclass
@@ -89,6 +89,114 @@ class ResultadoFinal:
     vencedor: str | List[str]
     jogadores_com_maior_caminho: List[str]
     ranking: List[str]
+
+
+@dataclass
+class VerificadorBilhetes:
+    """
+    Information Expert - Verifica bilhetes completos de um jogador.
+    
+    Responsabilidades:
+    - Verificar se jogador completou bilhete específico
+    - Listar todos os bilhetes completos
+    - Listar todos os bilhetes incompletos
+    - Calcular pontuação de bilhetes
+    
+    GRASP Principles:
+    - Information Expert: Conhece bilhetes e rotas do jogador
+    - Low Coupling: Usa PathFinder para lógica de busca
+    - High Cohesion: Focado em verificação de bilhetes
+    """
+    
+    pathfinder: PathFinder = field(default_factory=PathFinder)
+    
+    def verificar_bilhete_completo(
+        self, 
+        bilhete, 
+        rotas_conquistadas: List[Rota]
+    ) -> bool:
+        """
+        Verifica se bilhete foi completado.
+        
+        Args:
+            bilhete: BilheteDestino a verificar
+            rotas_conquistadas: Rotas conquistadas pelo jogador
+            
+        Returns:
+            True se existe caminho entre origem e destino
+        """
+        return self.pathfinder.verificar_caminho_existe(
+            origem=bilhete.cidadeOrigem,
+            destino=bilhete.cidadeDestino,
+            rotas_conquistadas=rotas_conquistadas
+        )
+    
+    def listar_bilhetes_completos(
+        self, 
+        bilhetes: List, 
+        rotas_conquistadas: List[Rota]
+    ) -> List:
+        """
+        Retorna lista de bilhetes completos.
+        
+        Args:
+            bilhetes: Lista de BilheteDestino do jogador
+            rotas_conquistadas: Rotas conquistadas pelo jogador
+            
+        Returns:
+            Lista de bilhetes completos
+        """
+        completos = []
+        for bilhete in bilhetes:
+            if self.verificar_bilhete_completo(bilhete, rotas_conquistadas):
+                completos.append(bilhete)
+        return completos
+    
+    def listar_bilhetes_incompletos(
+        self, 
+        bilhetes: List, 
+        rotas_conquistadas: List[Rota]
+    ) -> List:
+        """
+        Retorna lista de bilhetes incompletos.
+        
+        Args:
+            bilhetes: Lista de BilheteDestino do jogador
+            rotas_conquistadas: Rotas conquistadas pelo jogador
+            
+        Returns:
+            Lista de bilhetes incompletos
+        """
+        incompletos = []
+        for bilhete in bilhetes:
+            if not self.verificar_bilhete_completo(bilhete, rotas_conquistadas):
+                incompletos.append(bilhete)
+        return incompletos
+    
+    def calcular_pontuacao_bilhetes(
+        self, 
+        bilhetes: List, 
+        rotas_conquistadas: List[Rota]
+    ) -> int:
+        """
+        Calcula pontuação de bilhetes: +pontos para completos, -pontos para incompletos.
+        
+        Args:
+            bilhetes: Lista de BilheteDestino do jogador
+            rotas_conquistadas: Rotas conquistadas pelo jogador
+            
+        Returns:
+            Pontuação total de bilhetes
+        """
+        pontuacao = 0
+        
+        for bilhete in bilhetes:
+            if self.verificar_bilhete_completo(bilhete, rotas_conquistadas):
+                pontuacao += bilhete.pontos
+            else:
+                pontuacao -= bilhete.pontos
+        
+        return pontuacao
 
 
 @dataclass

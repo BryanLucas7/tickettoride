@@ -30,8 +30,8 @@ Regras Ticket to Ride:
 
 from dataclasses import dataclass, field
 from typing import List, Set, Dict, Tuple
-from .rota import Rota
-from .cidade import Cidade
+from ..entities.rota import Rota
+from ..entities.cidade import Cidade
 
 
 @dataclass
@@ -308,60 +308,3 @@ class LongestPathCalculator:
             caminho_atual.pop()
         
         return (melhor_comprimento, melhor_caminho)
-
-
-@dataclass
-class CalculadorPontuacaoFinal:
-    """
-    Information Expert - Calcula pontuação final completa do jogo.
-    
-    Responsabilidades:
-    - Calcular pontuação final de cada jogador
-    - Determinar quem tem maior caminho (+10 pontos)
-    - Aplicar critérios de desempate
-    - Determinar vencedor
-    
-    GRASP Principles:
-    - Information Expert: Conhece regras de pontuação
-    - Low Coupling: Usa componentes especializados (PathFinder, LongestPathCalculator)
-    - High Cohesion: Focado em cálculo de pontuação final
-    """
-    
-    longest_path_calculator: LongestPathCalculator = field(default_factory=LongestPathCalculator)
-    
-    def determinar_jogador_maior_caminho(
-        self, 
-        jogadores_rotas: Dict[str, List[Rota]]
-    ) -> List[str]:
-        """
-        Determina qual(is) jogador(es) tem o maior caminho.
-        
-        Se houver empate, retorna lista com todos os empatados.
-        
-        Args:
-            jogadores_rotas: Dicionário {jogador_id: [rotas_conquistadas]}
-            
-        Returns:
-            Lista de IDs de jogadores com maior caminho
-        """
-        if not jogadores_rotas:
-            return []
-        
-        # Calcular comprimento para cada jogador
-        comprimentos: Dict[str, int] = {}
-        
-        for jogador_id, rotas in jogadores_rotas.items():
-            comprimento = self.longest_path_calculator.calcular_maior_caminho(rotas)
-            comprimentos[jogador_id] = comprimento
-        
-        # Encontrar maior comprimento
-        maior_comprimento = max(comprimentos.values())
-        
-        # Retornar todos os jogadores com maior comprimento
-        jogadores_com_maior = [
-            jogador_id 
-            for jogador_id, comprimento in comprimentos.items() 
-            if comprimento == maior_comprimento
-        ]
-        
-        return jogadores_com_maior

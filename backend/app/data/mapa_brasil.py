@@ -11,10 +11,10 @@ from collections import defaultdict
 from typing import Dict, List, Tuple
 
 try:
-    from ..models.cidade import Cidade
-    from ..models.cor import Cor
-    from ..models.rota import Rota
-    from ..models.tabuleiro import Tabuleiro
+    from ..models.entities.cidade import Cidade
+    from ..models.entities.cor import Cor
+    from ..models.entities.rota import Rota
+    from ..models.entities.tabuleiro import Tabuleiro
 except ImportError:  # Suporte para execução quando "app" não está no caminho
     from models.cidade import Cidade
     from models.cor import Cor
