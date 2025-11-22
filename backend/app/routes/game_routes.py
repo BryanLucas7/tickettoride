@@ -2,7 +2,7 @@
 Rotas relacionadas a jogos (criação, estado, turnos, pontuação)
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..models.entities import Jogo, Jogador, Cor
 from ..schemas import (
     CreateGameRequest,
@@ -13,12 +13,10 @@ from ..schemas import (
     MaiorCaminhoLeaderResponse,
     MaiorCaminhoStatusResponse,
     EscolherBilhetesIniciaisRequest,
-    EscolherBilhetesIniciaisRequest,
     EscolhaBilhetesIniciaisResponse
 )
 import logging
 import uuid
-from random import sample
 from typing import Dict, List, Optional
 from ..dependencies import get_game_service
 from ..services.game_service import GameService
@@ -162,7 +160,7 @@ def get_game_state(game_id: str, game_service: GameService = Depends(get_game_se
     
     Information Expert: Jogo conhece seu próprio estado
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -375,85 +373,3 @@ def get_pontuacao_final(game_id: str, game_service: GameService = Depends(get_ga
         "mensagem": mensagem
     }
 
-@router.get("/games/{game_id}", response_model=GameStateResponse)
-def get_game_state(game_id: str):
-    """Retorna o estado atual do jogo"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    return GameStateResponse(
-        game_id=game_id,
-        current_player=jogo.jogador_atual.id if jogo.jogador_atual else None,
-        game_status=jogo.status.value,
-        board={"routes": [r.to_dict() for r in jogo.tabuleiro.rotas]},
-        players=[p.to_dict() for p in jogo.jogadores],
-        turn_number=jogo.numero_turno
-    )
-
-@router.post("/games/{game_id}/next-turn")
-def next_turn(game_id: str):
-    """Avança para o próximo turno"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    try:
-        jogo.avancar_turno()
-        game_service.save_game(game_id)
-        return {"message": "Turno avançado", "current_player": jogo.jogador_atual.id}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@router.get("/games/{game_id}/pontuacao-final")
-def get_final_score(game_id: str):
-    """Calcula e retorna a pontuação final"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    from ..models.calculators.pontuacao_final_calculator import PontuacaoFinalCalculator
-    from ..models.calculators.verificador_bilhetes import VerificadorBilhetes
-    from ..models.calculators.longest_path import LongestPathCalculator
-
-    calculator = PontuacaoFinalCalculator(jogo)
-    scores = calculator.calcular_pontuacao_final()
-
-    # Verificar bilhetes
-    verificador = VerificadorBilhetes(jogo.tabuleiro)
-    completed_tickets = []
-    for jogador in jogo.jogadores:
-        completed = verificador.verificar_bilhetes_completados(jogador)
-        completed_tickets.append({
-            "player_id": jogador.id,
-            "completed_tickets": [t.to_dict() for t in completed]
-        })
-
-    # Caminho mais longo
-    longest_path_calc = LongestPathCalculator(jogo.tabuleiro)
-    longest_paths = []
-    for jogador in jogo.jogadores:
-        path = longest_path_calc.calcular_caminho_mais_longo(jogador)
-        longest_paths.append({
-            "player_id": jogador.id,
-            "longest_path": len(path) if path else 0
-        })
-
-def save_game(game_id: str, jogo: Jogo):
-    """Salva o jogo em arquivo pickle"""
-    try:
-        save_dir = Path("saves")
-        save_dir.mkdir(exist_ok=True)
-        with open(save_dir / f"{game_id}.pkl", "wb") as f:
-            pickle.dump(jogo, f)
-    except Exception as e:
-        logger.error(f"Erro ao salvar jogo {game_id}: {e}")
-
-def load_game(game_id: str) -> Optional[Jogo]:
-    """Carrega o jogo do arquivo pickle"""
-    try:
-        save_dir = Path("saves")
-        with open(save_dir / f"{game_id}.pkl", "rb") as f:
-            return pickle.load(f)
-    except Exception:
-        return None
