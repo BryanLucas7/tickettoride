@@ -2,17 +2,14 @@
 Rotas relacionadas a rotas do jogo (visualização e conquistas)
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from ..dependencies import get_game_service
+from ..services.game_service import GameService
 from ..models.entities import Jogo
 from ..models.controllers.conquista_rota_controller import ConquistaRotaController
 from ..schemas import ConquistarRotaRequest
-from .utils import processar_fim_acao
-from typing import Dict
 
 router = APIRouter()
-
-from ..dependencies import get_game_service
-from ..services.game_service import GameService
 
 @router.get("/games/{game_id}/routes")
 def get_game_routes(game_id: str, game_service: GameService = Depends(get_game_service)):

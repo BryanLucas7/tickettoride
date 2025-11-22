@@ -2,7 +2,9 @@
 Rotas relacionadas a bilhetes destino (sorteio, escolha inicial, compra)
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from ..dependencies import get_game_service
+from ..services.game_service import GameService
 from ..models.entities import Jogo
 from ..models.entities.bilhete_destino import BILHETES_DESTINO
 from ..schemas import (
@@ -13,12 +15,8 @@ from ..schemas import (
     EscolhaBilhetesIniciaisResponse
 )
 from random import sample
-from typing import Dict
 
 router = APIRouter()
-
-# Referência ao dicionário global
-from .game_routes import active_games
 
 @router.get("/bilhetes/sortear")
 def sortear_bilhetes(quantidade: int = 3):
@@ -42,10 +40,10 @@ def sortear_bilhetes(quantidade: int = 3):
     "/games/{game_id}/players/{player_id}/tickets/initial",
     response_model=BilhetesPendentesResponse
 )
-def get_initial_tickets(game_id: str, player_id: str):
+def get_initial_tickets(game_id: str, player_id: str, game_service: GameService = Depends(get_game_service)):
     """Retorna os bilhetes iniciais pendentes para o jogador."""
 
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
 
@@ -81,10 +79,11 @@ def escolher_bilhetes_iniciais(
     game_id: str,
     player_id: str,
     request: EscolherBilhetesIniciaisRequest,
+    game_service: GameService = Depends(get_game_service)
 ):
     """Confirma a escolha dos bilhetes iniciais de um jogador."""
 
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
 
@@ -129,7 +128,7 @@ def escolher_bilhetes_iniciais(
     if not sucesso:
         raise HTTPException(status_code=400, detail="Invalid ticket selection")
 
-    # persist_active_games()  # Removido
+    game_service.save_game(game_id, jogo)
 
     return EscolhaBilhetesIniciaisResponse(
         success=True,
@@ -148,14 +147,14 @@ def escolher_bilhetes_iniciais(
     )
 
 @router.post("/games/{game_id}/players/{player_id}/buy-tickets")
-def buy_tickets(game_id: str, player_id: str, request: ComprarBilhetesRequest):
+def buy_tickets(game_id: str, player_id: str, request: ComprarBilhetesRequest, game_service: GameService = Depends(get_game_service)):
     """
     Compra bilhetes de destino
     
     GRASP Controller: API coordena a ação reutilizando bilhetes reservados
     REGRA: Compra de bilhetes é UMA ação completa - passa turno automaticamente
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -235,7 +234,7 @@ def buy_tickets(game_id: str, player_id: str, request: ComprarBilhetesRequest):
             jogo_terminou = True
             mensagem_fim = resultado_fim["mensagem"]
     
-    # persist_active_games()  # Removido
+    game_service.save_game(game_id, jogo)
 
     return {
         "success": True,

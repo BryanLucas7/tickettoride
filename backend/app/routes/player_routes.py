@@ -16,19 +16,18 @@ from ..schemas import (
     EscolhaBilhetesIniciaisResponse
 )
 import logging
-from typing import Dict
 
 router = APIRouter()
 
 
 @router.get("/games/{game_id}/players/{player_id}/cards")
-def get_player_cards(game_id: str, player_id: str):
+def get_player_cards(game_id: str, player_id: str, game_service: GameService = Depends(get_game_service)):
     """
     Retorna as cartas de um jogador específico
     
     Information Expert: Jogador conhece suas próprias cartas
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -45,13 +44,13 @@ def get_player_cards(game_id: str, player_id: str):
     }
 
 @router.get("/games/{game_id}/players/{player_id}/tickets")
-def get_player_tickets(game_id: str, player_id: str):
+def get_player_tickets(game_id: str, player_id: str, game_service: GameService = Depends(get_game_service)):
     """
     Retorna os bilhetes de destino de um jogador específico
     
     Information Expert: Jogador conhece seus próprios bilhetes
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -87,14 +86,14 @@ def get_player_tickets(game_id: str, player_id: str):
     }
 
 @router.post("/games/{game_id}/players/{player_id}/tickets/preview")
-def preview_tickets(game_id: str, player_id: str, quantidade: int = 3):
+def preview_tickets(game_id: str, player_id: str, quantidade: int = 3, game_service: GameService = Depends(get_game_service)):
     """
     Sorteia bilhetes e mantém o conjunto reservado até a confirmação de compra.
     """
     if quantidade < 1 or quantidade > 3:
         raise HTTPException(status_code=400, detail="Quantity must be between 1 and 3")
 
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
 
@@ -124,8 +123,7 @@ def preview_tickets(game_id: str, player_id: str, quantidade: int = 3):
             raise HTTPException(status_code=400, detail="No tickets available")
 
         jogo.bilhetesPendentesCompra[player_id] = bilhetes_reservados
-
-    # persist_active_games()  # Removido
+        game_service.save_game(game_id, jogo)
 
     return {
         "tickets": [
@@ -142,13 +140,13 @@ def preview_tickets(game_id: str, player_id: str, quantidade: int = 3):
     }
 
 @router.post("/games/{game_id}/players/{player_id}/draw-closed")
-def draw_closed_card(game_id: str, player_id: str):
+def draw_closed_card(game_id: str, player_id: str, game_service: GameService = Depends(get_game_service)):
     """
     Compra uma carta fechada (do baralho)
     
     REGRA: Se completar o turno (2 cartas), passa automaticamente
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -177,7 +175,7 @@ def draw_closed_card(game_id: str, player_id: str):
         resultado["turno_passado"] = False
     
     carta = resultado.get("carta") or {}
-    # persist_active_games()  # Removido
+    game_service.save_game(game_id, jogo)
 
     return {
         "success": True,
@@ -191,13 +189,13 @@ def draw_closed_card(game_id: str, player_id: str):
     }
 
 @router.post("/games/{game_id}/players/{player_id}/draw-open/{card_index}")
-def draw_open_card(game_id: str, player_id: str, card_index: int):
+def draw_open_card(game_id: str, player_id: str, card_index: int, game_service: GameService = Depends(get_game_service)):
     """
     Compra uma carta aberta (visível)
     
     REGRA: Se comprar locomotiva ou completar 2 cartas, passa automaticamente
     """
-    jogo = active_games.get(game_id)
+    jogo = game_service.get_game(game_id)
     if not jogo:
         raise HTTPException(status_code=404, detail="Game not found")
     
@@ -226,7 +224,7 @@ def draw_open_card(game_id: str, player_id: str, card_index: int):
         resultado["turno_passado"] = False
     
     carta = resultado.get("carta") or {}
-    # persist_active_games()  # Removido
+    game_service.save_game(game_id, jogo)
 
     return {
         "success": True,
@@ -238,80 +236,3 @@ def draw_open_card(game_id: str, player_id: str, card_index: int):
         "turn_completed": turno_completo,
         "next_player": resultado.get("proximo_jogador")
     }
-
-@router.post("/games/{game_id}/players/{player_id}/tickets/preview", response_model=BilhetesPendentesResponse)
-def preview_tickets(game_id: str, player_id: str):
-    """Mostra preview de bilhetes para o jogador escolher"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    jogador = next((p for p in jogo.jogadores if p.id == player_id), None)
-    if not jogador:
-        raise HTTPException(status_code=404, detail="Jogador não encontrado")
-
-    # Lógica de preview (simplificada)
-    bilhetes_sorteados = sample(BILHETES_DESTINO, 3)
-    return BilhetesPendentesResponse(
-        bilhetes=[b.to_dict() for b in bilhetes_sorteados]
-    )
-
-@router.post("/games/{game_id}/players/{player_id}/draw-closed")
-def draw_closed_card(game_id: str, player_id: str):
-    """Compra uma carta fechada"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    jogador = next((p for p in jogo.jogadores if p.id == player_id), None)
-    if not jogador:
-        raise HTTPException(status_code=404, detail="Jogador não encontrado")
-
-    try:
-        carta = jogo.baralho.comprar_carta_fechada()
-        jogador.mao.adicionar_carta(carta)
-        game_service.save_game(game_id)
-        return {"message": "Carta comprada", "card": carta.to_dict()}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@router.post("/games/{game_id}/players/{player_id}/draw-open/{card_index}")
-def draw_open_card(game_id: str, player_id: str, card_index: int):
-    """Compra uma carta aberta"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    jogador = next((p for p in jogo.jogadores if p.id == player_id), None)
-    if not jogador:
-        raise HTTPException(status_code=404, detail="Jogador não encontrado")
-
-    try:
-        carta = jogo.baralho.comprar_carta_aberta(card_index)
-        jogador.mao.adicionar_carta(carta)
-        game_service.save_game(game_id)
-        return {"message": "Carta aberta comprada", "card": carta.to_dict()}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@router.post("/games/{game_id}/players/{player_id}/buy-tickets")
-def buy_tickets(game_id: str, player_id: str, request: ComprarBilhetesRequest):
-    """Compra bilhetes destino"""
-    jogo = game_service.get_game(game_id)
-    if not jogo:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-
-    jogador = next((p for p in jogo.jogadores if p.id == player_id), None)
-    if not jogador:
-        raise HTTPException(status_code=404, detail="Jogador não encontrado")
-
-    try:
-        # Lógica simplificada
-        for bilhete_id in request.bilhete_ids:
-            bilhete = next((b for b in BILHETES_DESTINO if b.id == bilhete_id), None)
-            if bilhete:
-                jogador.adicionar_bilhete(bilhete)
-        game_service.save_game(game_id)
-        return {"message": "Bilhetes comprados"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
