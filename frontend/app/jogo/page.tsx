@@ -286,44 +286,8 @@ export default function JogoPage() {
         }
       }
 
-      // Verifica se há bilhetes iniciais pendentes de escolha apenas uma vez por jogador
-      const jogadorAtual = state.jogador_atual_id
-      if (jogadorAtual && !initialTicketsHandledRef.current.has(jogadorAtual)) {
-        const bilhetesIniciaisResponse = await apiFetch(
-          `/games/${gameId}/players/${jogadorAtual}/tickets/initial`
-        )
-
-        if (bilhetesIniciaisResponse.ok) {
-          const bilhetesIniciaisData = await bilhetesIniciaisResponse.json()
-          if (bilhetesIniciaisData.bilhetes && bilhetesIniciaisData.bilhetes.length > 0) {
-            // Escolhe automaticamente todos os bilhetes iniciais (ou você pode criar um modal)
-            const todosIds = bilhetesIniciaisData.bilhetes.map((b: any) => b.id)
-            await apiFetch(
-              `/games/${gameId}/players/${jogadorAtual}/tickets/initial`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bilhetes_escolhidos: todosIds })
-              }
-            )
-            // Atualiza bilhetes após escolha
-            const novaBuscaBilhetes = await apiFetch(
-              `/games/${gameId}/players/${jogadorAtual}/tickets`
-            )
-            if (novaBuscaBilhetes.ok) {
-              const novosBilhetesData = await novaBuscaBilhetes.json()
-              if (novosBilhetesData.tickets && Array.isArray(novosBilhetesData.tickets)) {
-                setMeusBilhetes(novosBilhetesData.tickets)
-              }
-            }
-          }
-          initialTicketsHandledRef.current.add(jogadorAtual)
-        } else if (bilhetesIniciaisResponse.status === 404) {
-          initialTicketsHandledRef.current.add(jogadorAtual)
-        } else {
-          console.warn("Falha ao consultar bilhetes iniciais:", bilhetesIniciaisResponse.status)
-        }
-      }
+      // Bilhetes iniciais são escolhidos na tela de setup via /bilhetes-destino
+      // Não há necessidade de verificar /tickets/initial aqui
 
       // Busca rotas do jogo (com informações de proprietário)
       const rotasResponse = await apiFetch(`/games/${gameId}/routes`)
@@ -734,13 +698,22 @@ export default function JogoPage() {
 
     try {
       const gameId = localStorage.getItem(GAME_STORAGE_KEY)
+      
+      // Debug temporário
+      console.log("🔍 DEBUG conquistarRota", {
+        gameId,
+        jogadorAtualId,
+        rotaSelecionada,
+        cartasParaEnviar,
+        url: `/games/${gameId}/players/${jogadorAtualId}/conquer-route`
+      })
+      
       const response = await apiFetch(
         `/games/${gameId}/players/${jogadorAtualId}/conquer-route`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            player_id: jogadorAtualId,
             rota_id: rotaSelecionada,
             cartas_usadas: cartasParaEnviar
           })

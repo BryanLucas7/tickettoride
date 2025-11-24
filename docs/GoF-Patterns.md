@@ -74,6 +74,8 @@
 
 ## 3. Template Method Pattern
 
+> **⚠️ DESCONTINUADO**: As classes `AcaoTurno` foram removidas em favor de serviços especializados (`RouteConquestService`, `TicketPurchaseService`, `CardDrawService`).
+
 ### Diagrama de Classes
 
 ```
@@ -103,6 +105,8 @@
 
 ## 4. Singleton Pattern
 
+> **⚠️ DESCONTINUADO**: A classe `GameManager` foi removida em favor de repositórios (`InMemoryJogoRepository`, `PickleJogoRepository`) e injeção de dependências.
+
 ### Diagrama de Classes
 
 ```
@@ -116,15 +120,11 @@
 └──────────────────────────────┘
 ```
 
-### Justificativa
+### Justificativa da Remoção
 
-- A camada de API precisa acessar um único jogo ativo; o singleton expõe essa referência de maneira controlada.
-- A existência de `resetar_singleton()` facilita cenários de teste e reinicializações do servidor.
-- Evita estados duplicados de partida quando múltiplas requisições chegam ao backend.
-
-### Benefício
-
-- Garante uma única fonte de verdade do estado da partida, simplificando sincronização entre endpoints e evitando partidas divergentes para os jogadores.
+- Singletons dificultam testes unitários e criam dependências implícitas.
+- A arquitetura hexagonal com repositórios e injeção de dependências permite melhor testabilidade e desacoplamento.
+- Múltiplos jogos podem ser gerenciados simultaneamente sem necessidade de estado global.
 
 ---
 

@@ -38,7 +38,7 @@ export default function BilhetesDestinoPage() {
       bilhetesSelecionados: []
     }))
     setJogadores(jogadoresComBilhetes)
-  }, [])
+  }, [router])
   
   // Buscar bilhetes quando o jogador muda ou quando o componente monta
   useEffect(() => {

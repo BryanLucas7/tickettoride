@@ -85,8 +85,10 @@
         ▲                             ▲
         │                             │
 ┌───────────────┐ coordena   ┌──────────────────────┐
-│   AcaoTurno   │──────────▶│ Validações específicas│
+│ RouteService  │──────────▶│ Validações específicas│
 └───────────────┘            └──────────────────────┘
+
+> **Nota**: `AcaoTurno` foi removido; serviços especializados (RouteConquestService, etc.) agora coordenam ações.
 
 Camada de UI
 ┌───────────────┐ media ┌───────────────┐
@@ -97,7 +99,7 @@ Camada de UI
 ### Justificativa
 
 - Controladores recebem eventos do sistema e coordenam serviços especializados sem assumir regras de baixo nível.
-- `AcaoTurno` garante o fluxo das ações; `ConquistaRotaController` integra validação, descarte, placar e verificação de fim.
+- `RouteConquestService` e outros serviços garantem o fluxo das ações; `ConquistaRotaController` integra validação, descarte, placar e verificação de fim.
 - Na camada de UI, `GameContext` concentra chamadas à API e atualização de estado, mantendo componentes puros.
 
 ### Benefício
@@ -291,7 +293,7 @@ Estados na UI
 |-----------|--------------------------------|
 | Information Expert | `Jogador`, `Mao`, `Placar`, `MaoCartas`, `ContadorTrens` |
 | Creator | `Jogo`, `GerenciadorDeBaralho`, `DescarteManager` |
-| Controller | `AcaoTurno`, `ConquistaRotaController`, `GameContext` |
+| Controller | `RouteConquestService`, `TicketPurchaseService`, `ConquistaRotaController`, `GameContext` |
 | Low Coupling | `ConquistaRotaController`, `GameApiClient`, componentes React |
 | High Cohesion | `Placar`, `GerenciadorFimDeJogo`, componentes de UI especializados |
 | Polymorphism | `RotaValidationStrategy`, `TurnoState` |

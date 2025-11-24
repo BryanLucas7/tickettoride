@@ -1,0 +1,6 @@
+{
+  "/page": "app/page.js",
+  "/setup/page": "app/setup/page.js",
+  "/bilhetes-destino/page": "app/bilhetes-destino/page.js",
+  "/jogo/page": "app/jogo/page.js"
+}

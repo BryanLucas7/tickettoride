@@ -6,6 +6,7 @@
 
 # python envs & caches
 venv/
+.venv/
 backend/venv/
 **/__pycache__/
 **/.pytest_cache/
