@@ -78,6 +78,7 @@ class MaiorCaminhoStatusResponse(BaseModel):
     """Status agregado do maior caminho contínuo durante o jogo"""
     comprimento: int
     lideres: List[MaiorCaminhoLeaderResponse]
+    caminho: Optional[List[str]] = None
 
 
 class GameStateResponse(BaseModel):
@@ -88,6 +89,9 @@ class GameStateResponse(BaseModel):
     jogadores: List[JogadorResponse]
     jogador_atual_id: Optional[str] = None  # UUID string
     cartas_visiveis: List[CartaVagaoResponse]
+    cartas_fechadas_restantes: Optional[int] = None
+    cartas_fechadas_disponiveis: Optional[int] = None
+    pode_comprar_carta_fechada: Optional[bool] = None
     maior_caminho: Optional[MaiorCaminhoStatusResponse] = None
     
     model_config = ConfigDict(

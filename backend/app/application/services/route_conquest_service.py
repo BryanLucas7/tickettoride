@@ -15,9 +15,11 @@ from fastapi import HTTPException
 from ...core.domain.entities.jogo import Jogo
 from ...core.domain.entities.jogador import Jogador
 from ...core.domain.entities.rota import Rota
+from ...core.domain.entities.cor import Cor
 from ...core.domain.entities.carta_vagao import CartaVagao
 from ...core.domain.managers.descarte_manager import DescarteManager
 from ...core.services.conquista_rota_controller import ConquistaRotaController
+from ...core.services.conquista_rota_result_builder import ConquistaRotaResultBuilder
 from .game_action_service import GameActionService
 
 logger = logging.getLogger(__name__)
@@ -90,17 +92,48 @@ class RouteConquestService:
             cartas_usadas.append(carta_encontrada)
         
         logger.info(f"✅ Cartas identificadas: {len(cartas_usadas)} cartas")
+
+        # 3. Validação defensiva das cores antes de processar (evita 500 e retorna 400 amigável)
+        self._validar_cartas_combinam_com_rota(rota, cartas_usadas)
         
-        # 3. Executar conquista via controller (ele remove as cartas)
+        # 4. Executar conquista via controller (ele remove as cartas)
         logger.info(f"🔄 Executando conquista...")
         resultado_conquista = self._executar_conquista(jogo, jogador, rota, cartas_usadas)
         logger.info(f"✅ Conquista executada: {resultado_conquista}")
         
-        # 4. Passar turno automaticamente (conquista é ação completa)
+        # 5. Passar turno automaticamente (conquista é ação completa)
         resultado_turno = self.game_action_service.passar_turno_e_verificar_fim(jogo)
         
-        # 5. Retornar resultado consolidado
+        # 6. Retornar resultado consolidado
         return self._formatar_resposta(resultado_conquista, resultado_turno)
+
+    def _validar_cartas_combinam_com_rota(self, rota: Rota, cartas_usadas: List[CartaVagao]) -> None:
+        """Garante que a seleção enviada bate com as regras de cor da rota."""
+        comprimento = rota.comprimento
+        if len(cartas_usadas) != comprimento:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Selecione exatamente {comprimento} carta(s) para conquistar esta rota."
+            )
+
+        cartas_coloridas = [c for c in cartas_usadas if not getattr(c, "ehLocomotiva", False)]
+
+        if rota.cor == Cor.CINZA:
+            cores_nao_locomotiva = {c.cor for c in cartas_coloridas}
+            if len(cores_nao_locomotiva) > 1:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Rotas cinza exigem cartas da mesma cor. Use locomotivas como coringa para completar."
+                )
+            return
+
+        cor_alvo = rota.cor
+        cores_invalidas = {c.cor.value for c in cartas_coloridas if c.cor != cor_alvo}
+        if cores_invalidas:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Use apenas cartas {cor_alvo.value} ou locomotivas para esta rota."
+            )
     
     def _executar_conquista(
         self,
@@ -129,9 +162,15 @@ class RouteConquestService:
         
         # Obter ou criar gerenciador de fim de jogo (método movido para Jogo)
         gerenciador_fim_jogo = jogo.obter_ou_criar_gerenciador_fim()
-        
+        placar = jogo.placar
+
         # Criar controller e executar conquista
-        controller = ConquistaRotaController()
+        controller = ConquistaRotaController(
+            result_builder=ConquistaRotaResultBuilder(
+                placar=placar,
+                gerenciador_fim_jogo=gerenciador_fim_jogo
+            )
+        )
         
         logger.info(f"🎮 Chamando controller.conquistar_rota...")
         logger.info(f"  - Jogador: {jogador.nome}")

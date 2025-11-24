@@ -51,6 +51,7 @@ interface MaiorCaminhoLeader {
 interface MaiorCaminhoStatus {
   comprimento: number
   lideres: MaiorCaminhoLeader[]
+  caminho?: string[]
 }
 
 interface GameState {
@@ -60,6 +61,9 @@ interface GameState {
   jogadores: Jogador[]
   jogador_atual_id: string | null
   cartas_visiveis: CartaVagao[]
+  cartas_fechadas_restantes?: number
+  cartas_fechadas_disponiveis?: number
+  pode_comprar_carta_fechada?: boolean
   maior_caminho?: MaiorCaminhoStatus
 }
 
@@ -154,14 +158,76 @@ export default function JogoPage() {
   const currentGameIdRef = useRef<string | null>(null)
   const jogadorAtualAnteriorRef = useRef<string | null>(null)
   const fimJogoProcessadoRef = useRef(false)
+  const fluxoCompraCartasAtivo = cartasCompradasNesteTurno > 0 && !turnoCompraCompleto
+  const acaoCartasBloqueiaOutras = fluxoCompraCartasAtivo || turnoCompraCompleto
 
   useEffect(() => {
     setCartasSelecionadas([])
   }, [rotaSelecionada])
 
+  const validarSelecaoCartasParaRota = (
+    rotaInfo: Rota | null,
+    indicesSelecionados: number[]
+  ): { valida: boolean; mensagem?: string; cartasDetalhes?: CartaVagao[] } => {
+    if (!rotaInfo) {
+      return { valida: false, mensagem: "❌ Selecione uma rota disponível no mapa antes de conquistar" }
+    }
+
+    const cartasDetalhes = indicesSelecionados
+      .map((indice) => minhasCartas[indice])
+      .filter((carta): carta is CartaVagao => Boolean(carta))
+
+    if (cartasDetalhes.length !== indicesSelecionados.length) {
+      return {
+        valida: false,
+        mensagem: "❌ Não foi possível localizar todas as cartas selecionadas. Atualize as cartas e tente novamente."
+      }
+    }
+
+    if (cartasDetalhes.length !== rotaInfo.comprimento) {
+      return {
+        valida: false,
+        mensagem: `❌ Selecione ${rotaInfo.comprimento} carta${rotaInfo.comprimento > 1 ? "s" : ""} para conquistar esta rota.`
+      }
+    }
+
+    const corRota = rotaInfo.cor.toLowerCase()
+    const coresNaoLocomotiva = new Set(
+      cartasDetalhes
+        .filter((carta) => !carta.eh_locomotiva)
+        .map((carta) => carta.cor.toLowerCase())
+    )
+
+    if (corRota === "cinza") {
+      if (coresNaoLocomotiva.size > 1) {
+        return {
+          valida: false,
+          mensagem: "❌ Rotas cinza exigem cartas da mesma cor. Use locomotivas como coringa para completar."
+        }
+      }
+      return { valida: true, cartasDetalhes }
+    }
+
+    const corAlvo = corRota
+    const temCorIncorreta = Array.from(coresNaoLocomotiva).some((cor) => cor !== corAlvo)
+
+    if (temCorIncorreta) {
+      return { valida: false, mensagem: `❌ Use cartas ${corAlvo} ou locomotivas para esta rota.` }
+    }
+
+    return { valida: true, cartasDetalhes }
+  }
+
   const rotaSelecionadaInfo = rotaSelecionada
     ? rotasDoJogo.find((rota) => rota.id === rotaSelecionada) ?? null
     : null
+
+  const validacaoSelecaoAtual = validarSelecaoCartasParaRota(rotaSelecionadaInfo, cartasSelecionadas)
+  const podeConquistarRota =
+    validacaoSelecaoAtual.valida &&
+    !fluxoBilhetesAtivo &&
+    !carregandoBilhetesPreview &&
+    !acaoCartasBloqueiaOutras
 
   const normalizarCorFimJogo = (cor?: string | null) => {
     if (!cor) return "blue"
@@ -405,6 +471,12 @@ export default function JogoPage() {
   const comprarCartaFechada = async () => {
     if (fluxoBilhetesAtivo || carregandoBilhetesPreview) {
       setMensagem("⚠️ Conclua a escolha de bilhetes antes de realizar outra ação.")
+      return
+    }
+
+    if (baralhoPossivelmenteVazio) {
+      setMensagem("⚠️ Baralho esgotado: aguarde reposição para comprar cartas fechadas.")
+      setMensagemCompraCartas("Baralho esgotado: não há cartas fechadas para comprar no momento.")
       return
     }
 
@@ -659,32 +731,14 @@ export default function JogoPage() {
       return
     }
 
-    if (cartasSelecionadas.length !== rotaSelecionadaInfo.comprimento) {
-      setMensagem(`❌ Selecione ${rotaSelecionadaInfo.comprimento} carta${rotaSelecionadaInfo.comprimento > 1 ? "s" : ""} para conquistar esta rota.`)
+    const validacaoSelecao = validarSelecaoCartasParaRota(rotaSelecionadaInfo, cartasSelecionadas)
+
+    if (!validacaoSelecao.valida || !validacaoSelecao.cartasDetalhes) {
+      setMensagem(validacaoSelecao.mensagem ?? "❌ Seleção de cartas inválida para esta rota.")
       return
     }
 
-    const cartasSelecionadasDetalhes = cartasSelecionadas
-      .map((indice) => minhasCartas[indice])
-      .filter((carta): carta is CartaVagao => Boolean(carta))
-
-    if (rotaSelecionadaInfo.cor.toLowerCase() === "cinza") {
-      const coresNaoLocomotiva = new Set(
-        cartasSelecionadasDetalhes
-          .filter((carta) => !carta.eh_locomotiva)
-          .map((carta) => carta.cor.toLowerCase())
-      )
-
-      if (coresNaoLocomotiva.size > 1) {
-        setMensagem("❌ Rotas cinza exigem todas as cartas da mesma cor. Use locomotivas como coringa para completar a sequência.")
-        return
-      }
-
-      if (coresNaoLocomotiva.size === 0 && cartasSelecionadasDetalhes.length > 0 && cartasSelecionadasDetalhes.every((carta) => carta.eh_locomotiva !== true)) {
-        setMensagem("❌ Escolha cartas da mesma cor ou locomotivas para conquistar esta rota cinza.")
-        return
-      }
-    }
+    const cartasSelecionadasDetalhes = validacaoSelecao.cartasDetalhes
 
     const cartasParaEnviar = cartasSelecionadasDetalhes
       .map((carta) => carta.cor)
@@ -905,8 +959,11 @@ export default function JogoPage() {
   const bilhetesAtuais = meusBilhetes
   const ehMinhaVez = true  // Sempre true pois a tela sempre mostra o jogador da vez
   const cartasCompradasNoTurno = turnoCompraCompleto ? 2 : cartasCompradasNesteTurno
-  const fluxoCompraCartasAtivo = cartasCompradasNesteTurno > 0 && !turnoCompraCompleto
-  const acaoCartasBloqueiaOutras = fluxoCompraCartasAtivo || turnoCompraCompleto
+  const baralhoPossivelmenteVazio = gameState
+    ? gameState.pode_comprar_carta_fechada === false ||
+      (typeof gameState.cartas_fechadas_disponiveis === "number" && gameState.cartas_fechadas_disponiveis <= 0)
+    : false
+  const cartasFechadasRestantes = gameState?.cartas_fechadas_disponiveis ?? gameState?.cartas_fechadas_restantes ?? null
   const rotasConquistadas = rotasDoJogo
     .filter((rota) => rota.proprietario_id === jogadorAtualId)
     .map((rota) => ({
@@ -1043,6 +1100,11 @@ export default function JogoPage() {
                       )
                     })}
                   </div>
+                  {gameState.maior_caminho.caminho && gameState.maior_caminho.caminho.length > 0 && (
+                    <p className="mt-3 text-xs text-purple-800">
+                      Caminho: {gameState.maior_caminho.caminho.join(" → ")}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="mt-4 bg-white/70 rounded-lg p-3 text-center">
@@ -1121,17 +1183,24 @@ export default function JogoPage() {
                       type="button"
                       className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                       onClick={comprarCartaFechada}
-                      disabled={turnoCompraCompleto || fluxoBilhetesAtivo || carregandoBilhetesPreview}
+                      disabled={turnoCompraCompleto || fluxoBilhetesAtivo || carregandoBilhetesPreview || baralhoPossivelmenteVazio}
                       title={
                         fluxoBilhetesAtivo
                           ? "Finalize a escolha de bilhetes antes de comprar cartas."
                           : turnoCompraCompleto
                             ? "Você já concluiu as compras de cartas deste turno."
-                            : "Comprar carta do baralho fechado"
+                            : baralhoPossivelmenteVazio
+                              ? "Baralho esgotado: não é possível comprar cartas fechadas no momento."
+                              : "Comprar carta do baralho fechado"
                       }
                     >
                       🂠 Comprar do Baralho (Fechada)
                     </button>
+
+                    <p className="text-xs text-gray-600 mt-2">
+                      Cartas fechadas restantes (baralho):{" "}
+                      {typeof cartasFechadasRestantes === "number" ? cartasFechadasRestantes : "—"}
+                    </p>
 
                     <p className="text-xs text-gray-500 mt-2">
                       Cartas compradas neste turno: {cartasCompradasNoTurno}/2
@@ -1143,24 +1212,14 @@ export default function JogoPage() {
                         <span>{mensagemCompraCartas}</span>
                       </div>
                     )}
-                  </div>
-
-                  <div className="border-2 border-purple-200 rounded-lg p-3">
-                    <h3 className="font-semibold text-purple-700 mb-2">🛤️ Conquistar Rota</h3>
-                    <p className="text-sm text-gray-600">
-                      Selecione uma rota no mapa e use a seção <strong>Rota selecionada</strong> abaixo para escolher as cartas e confirmar a conquista.
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      {rotaSelecionada
-                        ? "Rota aguardando confirmação no painel inferior."
-                        : "Nenhuma rota selecionada no momento."}
-                    </p>
-                    {acaoCartasBloqueiaOutras && (
-                      <p className="text-xs text-orange-700 mt-2">
-                        Você optou por comprar cartas neste turno. Conclua essa ação (segunda compra ou aguarde o próximo turno) para liberar a conquista de rotas.
-                      </p>
+                    {baralhoPossivelmenteVazio && (
+                      <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+                        <span className="text-base leading-none">⚠️</span>
+                        <span>Baralho esgotado: não é possível comprar cartas fechadas enquanto não houver reposição.</span>
+                      </div>
                     )}
                   </div>
+
                   <button
                     className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                     onClick={abrirModalBilhetes}
@@ -1351,12 +1410,7 @@ export default function JogoPage() {
                         type="button"
                         className="flex-1 min-w-[180px] bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:bg-gray-300 disabled:text-gray-600"
                         onClick={conquistarRota}
-                        disabled={
-                          cartasSelecionadas.length !== cartasNecessarias ||
-                          fluxoBilhetesAtivo ||
-                          carregandoBilhetesPreview ||
-                          acaoCartasBloqueiaOutras
-                        }
+                        disabled={!podeConquistarRota}
                       >
                         Conquistar rota selecionada
                       </button>

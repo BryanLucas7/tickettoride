@@ -98,6 +98,9 @@ def get_game_state(
         jogadores=jogadores,
         jogador_atual_id=estado["jogador_atual_id"],
         cartas_visiveis=cartas_visiveis,
+        cartas_fechadas_restantes=estado.get("cartas_fechadas_restantes"),
+        cartas_fechadas_disponiveis=estado.get("cartas_fechadas_disponiveis"),
+        pode_comprar_carta_fechada=estado.get("pode_comprar_carta_fechada"),
         maior_caminho=maior_caminho_status
     )
 
@@ -143,4 +146,3 @@ def get_pontuacao_final(
         - mensagem: Mensagem de resultado
     """
     return pontuacao_service.calcular_resultado_final(ctx.jogo)
-

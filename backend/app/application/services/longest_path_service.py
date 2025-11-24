@@ -79,6 +79,7 @@ class LongestPathService:
             return None
         
         maior_comprimento = max(comprimentos.values())
+        caminho_cidades: Optional[List[str]] = None
         
         lideres_response = []
         for jogador in jogo.gerenciadorDeTurnos.jogadores:
@@ -90,8 +91,38 @@ class LongestPathService:
                         jogador_cor=jogador.cor.value if hasattr(jogador.cor, "value") else jogador.cor
                     )
                 )
+                # Captura caminho detalhado do primeiro líder (suficiente para exibir)
+                if caminho_cidades is None:
+                    _, rotas_caminho = self.calculator.encontrar_maior_caminho(
+                        jogo.rotas_do_jogador(jogador)
+                    )
+                    caminho_cidades = self._rotas_para_caminho_cidades(rotas_caminho)
         
         return MaiorCaminhoStatusResponse(
             comprimento=int(maior_comprimento),
-            lideres=lideres_response
+            lideres=lideres_response,
+            caminho=caminho_cidades
         )
+
+    def _rotas_para_caminho_cidades(self, rotas_caminho):
+        """Converte sequência de rotas em lista de nomes de cidades na ordem."""
+        if not rotas_caminho:
+            return []
+
+        caminho_cidades = []
+        # inicia com a primeira rota
+        primeira = rotas_caminho[0]
+        caminho_cidades.append(primeira.cidadeA.nome)
+        caminho_cidades.append(primeira.cidadeB.nome)
+
+        for rota in rotas_caminho[1:]:
+            if rota.cidadeA.nome == caminho_cidades[-1]:
+                caminho_cidades.append(rota.cidadeB.nome)
+            elif rota.cidadeB.nome == caminho_cidades[-1]:
+                caminho_cidades.append(rota.cidadeA.nome)
+            else:
+                # se não encaixar, apenas adiciona extremidades (fallback)
+                caminho_cidades.append(rota.cidadeA.nome)
+                caminho_cidades.append(rota.cidadeB.nome)
+
+        return caminho_cidades

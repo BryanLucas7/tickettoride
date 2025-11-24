@@ -6,6 +6,8 @@ Adapter que implementa JogoRepositoryPort usando serialização pickle.
 
 import pickle
 import logging
+import os
+import shutil
 from pathlib import Path
 from typing import Optional, List, Dict
 from ....core.ports.repositories.jogo_repository_port import JogoRepositoryPort
@@ -50,32 +52,64 @@ class PickleJogoRepository(JogoRepositoryPort):
     
     def _load_from_disk(self) -> None:
         """Carrega jogos do arquivo pickle para o cache em memória."""
-        if not self.cache_file.exists():
-            logger.info("Cache file não existe ainda: %s", self.cache_file)
+        def _try_load(path: Path, origem: str) -> bool:
+            if not path.exists():
+                return False
+            try:
+                with path.open("rb") as f:
+                    cached_games = pickle.load(f)
+                if isinstance(cached_games, dict):
+                    self._games_cache.clear()
+                    self._games_cache.update(cached_games)
+                    logger.info("Carregados %d jogo(s) do cache%s", len(self._games_cache), origem)
+                    return True
+                logger.warning("Cache %s inválido: conteúdo não é dict", origem)
+            except Exception as exc:
+                logger.warning("Falha ao carregar cache%s: %s", origem, exc)
+            return False
+
+        # Tenta arquivo principal; se falhar, tenta backup
+        backup_path = self.cache_file.with_suffix(self.cache_file.suffix + ".bak")
+        if _try_load(self.cache_file, ""):
             return
-        
-        try:
-            with self.cache_file.open("rb") as f:
-                cached_games = pickle.load(f)
-            
-            if isinstance(cached_games, dict):
-                self._games_cache.clear()
-                self._games_cache.update(cached_games)
-                logger.info("Carregados %d jogo(s) do cache", len(self._games_cache))
-        except Exception as exc:
-            logger.warning("Falha ao carregar cache: %s", exc)
-            self._games_cache = {}
+        if _try_load(backup_path, " (backup)"):
+            return
+
+        # Nada carregado
+        self._games_cache = {}
+        logger.info("Iniciando cache vazio: arquivo inexistente ou corrompido.")
     
     def _persist_to_disk(self) -> None:
         """Persiste o cache em memória para o arquivo pickle."""
+        backup_path = self.cache_file.with_suffix(self.cache_file.suffix + ".bak")
+        temp_path = self.cache_file.with_suffix(self.cache_file.suffix + ".tmp")
         try:
             self.cache_file.parent.mkdir(parents=True, exist_ok=True)
-            with self.cache_file.open("wb") as f:
+            # Cria backup do arquivo atual antes de substituir
+            if self.cache_file.exists():
+                try:
+                    shutil.copy2(self.cache_file, backup_path)
+                except Exception as exc:
+                    logger.warning("Não foi possível criar backup do cache atual: %s", exc)
+
+            # Escrita atômica em arquivo temporário e replace
+            with temp_path.open("wb") as f:
                 pickle.dump(self._games_cache, f)
+                f.flush()
+                os.fsync(f.fileno())
+
+            temp_path.replace(self.cache_file)
             logger.debug("Cache persistido: %d jogo(s)", len(self._games_cache))
         except Exception as exc:
             logger.error("Falha ao persistir cache: %s", exc)
             raise PersistenceError(f"Erro ao salvar jogos: {exc}") from exc
+        finally:
+            # Limpa temporário se sobrar
+            if temp_path.exists():
+                try:
+                    temp_path.unlink()
+                except Exception:
+                    pass
     
     def salvar(self, jogo: Jogo) -> None:
         """

@@ -43,6 +43,10 @@ class JogoComprasService:
         # Registra compra no estado
         self.jogo.estadoCompraCartas.registrarCompraCartaFechada()
 
+        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente
+        if not self.jogo.estadoCompraCartas.turnoCompleto and not self._ha_opcao_de_compra():
+            self.jogo.estadoCompraCartas.turnoCompleto = True
+
         return success_response(
             self.jogo.estadoCompraCartas.obterMensagemStatus(),
             carta=format_card(carta),
@@ -93,6 +97,10 @@ class JogoComprasService:
         # Registra compra no estado
         self.jogo.estadoCompraCartas.registrarCompraCartaAberta(ehLocomotiva=carta.ehLocomotiva)
 
+        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente
+        if not self.jogo.estadoCompraCartas.turnoCompleto and not self._ha_opcao_de_compra():
+            self.jogo.estadoCompraCartas.turnoCompleto = True
+
         return success_response(
             self.jogo.estadoCompraCartas.obterMensagemStatus(),
             carta=format_card(carta),
@@ -115,3 +123,27 @@ class JogoComprasService:
             "cartasAbertas": format_cards(self.jogo.gerenciadorDeBaralho.obterCartasAbertas()) if self.jogo.gerenciadorDeBaralho else [],
             "mensagem": self.jogo.estadoCompraCartas.obterMensagemStatus()
         }
+
+    def _ha_opcao_de_compra(self) -> bool:
+        """
+        Verifica se ainda existe alguma carta que possa ser comprada neste turno.
+        Considera regras do estado (locomotiva, limite 2 cartas) e disponibilidade.
+        """
+        estado = self.jogo.estadoCompraCartas
+
+        if estado.turnoCompleto:
+            return False
+
+        baralho = self.jogo.gerenciadorDeBaralho
+
+        # Há carta fechada disponível no baralho/descarte e regra permite?
+        if estado.podeComprarCartaFechada():
+            if (baralho.baralhoVagoes and len(baralho.baralhoVagoes.cartas) > 0) or baralho.descarteVagoes:
+                return True
+
+        # Há alguma carta aberta permitida pelo estado?
+        for carta in baralho.obterCartasAbertas():
+            if estado.podeComprarCartaAberta(ehLocomotiva=carta.ehLocomotiva):
+                return True
+
+        return False

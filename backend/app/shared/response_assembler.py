@@ -63,18 +63,25 @@ class ResponseAssembler:
         
         # Formatar cartas visíveis
         cartas_visiveis = []
+        cartas_fechadas_restantes = 0
         if jogo.gerenciadorDeBaralho:
             cartas_visiveis = EntityFormatters.formatar_cartas(
                 jogo.gerenciadorDeBaralho.cartasAbertas
             )
+            cartas_fechadas_restantes = len(jogo.gerenciadorDeBaralho.baralhoVagoes.cartas)
         
+        cartas_fechadas_disponiveis = cartas_fechadas_restantes  # apenas baralho fechado
+
         return {
             "game_id": jogo.id,
             "iniciado": jogo.iniciado,
             "finalizado": jogo.finalizado,
             "jogadores": jogadores_formatados,
             "jogador_atual_id": jogador_atual_id,
-            "cartas_visiveis": cartas_visiveis
+            "cartas_visiveis": cartas_visiveis,
+            "cartas_fechadas_restantes": cartas_fechadas_restantes,
+            "cartas_fechadas_disponiveis": cartas_fechadas_disponiveis,
+            "pode_comprar_carta_fechada": cartas_fechadas_disponiveis > 0
         }
     
     @staticmethod
