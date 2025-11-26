@@ -48,6 +48,8 @@ backend/app/.games_cache.pkl.bak
 reports/
 .jscpd-report/
 *.jscpd-report.json
+*.kilocodemodes*
+activate.fish
 
 # local playgrounds / scripts
 backend/app/main.py
