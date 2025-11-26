@@ -10,7 +10,7 @@ Testa:
 import pytest
 from unittest.mock import Mock, MagicMock
 from app.application.services.card_draw_service import CardDrawService
-from app.shared.bilhete_helpers import BilheteHelpers
+from app.core.domain.support.bilhete_helpers import BilheteHelpers
 from app.core.domain.entities.bilhete_destino import BilheteDestino
 from app.core.domain.entities.cidade import Cidade
 from app.core.domain.entities.jogador import Jogador
@@ -24,11 +24,12 @@ class TestCardDrawService:
         """Testa processamento de resultado bem-sucedido"""
         # Arrange
         jogo = Mock()
-        jogo.estadoCompraCartas = Mock()
-        jogo.estadoCompraCartas.turnoCompleto = True
+        jogo.estado = Mock()
+        jogo.estado.estado_compra = Mock()
+        jogo.estado.estado_compra.turnoCompleto = True
+        jogo.estado.gerenciador_fim = None  # Sem fim de jogo
         jogo.resetar_estado_compra = Mock()
         jogo.passar_turno = Mock(return_value="player_2")
-        jogo.gerenciadorFimDeJogo = None  # Sem fim de jogo
         
         resultado_compra = {
             "success": True,
@@ -78,19 +79,20 @@ class TestBilheteHelpers:
         bilhetes_escolhidos = [bilhete1, bilhete2]
         bilhetes_recusados = [bilhete3]
         
-        gerenciador = Mock()
-        gerenciador.devolverBilhetes = Mock()
+        # Cria mock do gerenciador de bilhetes (SRP: classe separada)
+        gerenciador_bilhetes = Mock()
+        gerenciador_bilhetes.devolver = Mock()
         
         # Act
         BilheteHelpers.processar_escolha_bilhetes(
-            jogador, bilhetes_escolhidos, bilhetes_recusados, gerenciador
+            jogador, bilhetes_escolhidos, bilhetes_recusados, gerenciador_bilhetes
         )
         
         # Assert
         assert len(jogador.bilhetes) == 2
         assert bilhete1 in jogador.bilhetes
         assert bilhete2 in jogador.bilhetes
-        gerenciador.devolverBilhetes.assert_called_once_with([bilhete3])
+        gerenciador_bilhetes.devolver.assert_called_once_with([bilhete3])
     
     def test_separar_bilhetes_por_indices(self):
         """Testa separação de bilhetes por índices"""

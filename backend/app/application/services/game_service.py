@@ -43,6 +43,9 @@ class GameService:
         """Sincroniza cache com repository."""
         self.active_games.clear()
         for jogo in self.repository.listar():
+            # Reidrata services internos caso o jogo tenha sido carregado via pickle
+            if hasattr(jogo, "_ensure_internal_services"):
+                jogo._ensure_internal_services(force_refresh=True)
             game_id = f"game-{jogo.id}" if not str(jogo.id).startswith("game-") else str(jogo.id)
             self.active_games[game_id] = jogo
         logger.info(f"Sincronizados {len(self.active_games)} jogo(s) do repository")
@@ -57,23 +60,14 @@ class GameService:
         Returns:
             Jogo ou None se não encontrado
         """
-        # Debug temporário
-        logger.info(f"🔍 DEBUG get_game - Buscando: {game_id}")
-        logger.info(f"🔍 DEBUG get_game - Cache tem: {list(self.active_games.keys())}")
-        
         # Tenta cache primeiro
         if game_id in self.active_games:
-            logger.info(f"✅ Jogo {game_id} encontrado no cache")
             return self.active_games[game_id]
         
         # Busca no repository
-        logger.info(f"🔄 Buscando {game_id} no repository...")
         jogo = self.repository.buscar(game_id)
         if jogo:
-            logger.info(f"✅ Jogo {game_id} encontrado no repository, adicionando ao cache")
             self.active_games[game_id] = jogo
-        else:
-            logger.warning(f"❌ Jogo {game_id} NÃO encontrado nem no cache nem no repository!")
         return jogo
 
     def save_game(self, game_id: str, jogo: Jogo) -> None:

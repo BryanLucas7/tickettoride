@@ -8,7 +8,7 @@ Refatoração DRY:
 from fastapi import APIRouter, Depends
 from .....dependencies import get_route_conquest_service
 from .....application.services.route_conquest_service import RouteConquestService
-from .....shared.response_assembler import ResponseAssembler
+from .....shared.assemblers import RouteAssembler
 from .....shared.persistence_decorator import auto_save_game
 from .....shared.request_context import GameRequestContext, PlayerRequestContext, get_game_context, get_player_context
 from ..schemas import ConquistarRotaRequest
@@ -25,8 +25,8 @@ def get_game_routes(
     Information Expert: Tabuleiro conhece todas as rotas
     Refatoração DRY: Usa GameRequestContext para eliminar boilerplate
     """
-    # Usar ResponseAssembler para montar painel de rotas
-    painel = ResponseAssembler.montar_painel_rotas(ctx.jogo, incluir_proprietario_detalhes=True)
+    # Usar RouteAssembler para montar painel de rotas (migrado de ResponseAssembler)
+    painel = RouteAssembler.montar_painel_rotas(ctx.jogo, incluir_proprietario_detalhes=True)
     
     # Ajustar nomes dos campos para resposta esperada
     routes_data = []
@@ -65,12 +65,6 @@ def conquer_route(
     - @auto_save_game elimina necessidade de game_service.save_game()
     - PlayerRequestContext elimina boilerplate de parâmetros
     """
-    # Debug temporário
-    import logging
-    logger = logging.getLogger(__name__)
-    logger.info(f"🔍 DEBUG conquer_route - game_id: {ctx.game_id}, player_id: {ctx.player_id}")
-    logger.info(f"🔍 DEBUG request - rota_id: {request.rota_id}, cartas: {request.cartas_usadas}")
-    
     # Conquistar rota usando o service
     resultado = conquest_service.conquistar_rota(
         jogo=ctx.jogo,

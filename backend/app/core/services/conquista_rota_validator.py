@@ -10,8 +10,8 @@ from typing import List, Dict
 from ..domain.entities.jogador import Jogador
 from ..domain.entities.rota import Rota
 from ..domain.entities.carta_vagao import CartaVagao
-from ..domain.strategies.rota_validation_strategy import criar_estrategia_validacao
-from ..domain.strategies.validador_rotas_duplas import ValidadorRotasDuplas
+from ..domain.strategies.rota_validation_factory import criar_estrategia_validacao
+from ..domain.strategies.rota_dupla_validator import RotaDuplaValidator
 from ..domain.support.responses import success_response, error_response
 
 
@@ -32,7 +32,7 @@ class ConquistaRotaValidator:
     - High Cohesion: Focado apenas em validações
     """
 
-    def __init__(self, validador_duplas: ValidadorRotasDuplas = None):
+    def __init__(self, validador_duplas: RotaDuplaValidator = None):
         """
         Inicializa o validador.
 

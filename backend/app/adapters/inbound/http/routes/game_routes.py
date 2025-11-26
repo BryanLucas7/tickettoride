@@ -20,7 +20,7 @@ from .....dependencies import (
     get_pontuacao_final_service, 
     get_longest_path_service
 )
-from .....shared.response_assembler import ResponseAssembler
+from .....shared.assemblers import GameStateAssembler, GameCreationAssembler
 from .....shared.persistence_decorator import auto_save_game
 from .....shared.request_context import GameRequestContext, get_game_context
 from .....application.services.game_service import GameService
@@ -54,12 +54,13 @@ def create_game(
     # Armazena o jogo
     game_service.save_game(jogo.id, jogo)
     
-    # Retorna resposta usando ResponseAssembler
-    return ResponseAssembler.montar_criacao_jogo(jogo, incluir_jogadores_detalhados=False)
+    # Retorna resposta usando GameCreationAssembler (migrado de ResponseAssembler)
+    return GameCreationAssembler.montar_criacao_jogo(jogo, incluir_jogadores_detalhados=False)
 
 @router.get("/{game_id}", response_model=GameStateResponse)
 def get_game_state(
     ctx: GameRequestContext = Depends(get_game_context),
+    action_service: GameActionService = Depends(get_game_action_service),
     longest_path_service: LongestPathService = Depends(get_longest_path_service)
 ):
     """
@@ -68,8 +69,11 @@ def get_game_state(
     Information Expert: Jogo conhece seu próprio estado
     Refatoração DRY: Usa GameRequestContext para eliminar boilerplate
     """
-    # Monta estado completo usando ResponseAssembler
-    estado = ResponseAssembler.montar_estado_jogo_completo(ctx.jogo)
+    # Autopass se jogador atual não tiver jogadas possíveis (inclui deadlock global)
+    action_service.autopassar_se_necessario(ctx.jogo)
+
+    # Monta estado completo usando GameStateAssembler (migrado de ResponseAssembler)
+    estado = GameStateAssembler.montar_estado_completo(ctx.jogo)
     
     # Converte jogadores para JogadorResponse (schema do pydantic)
     jogadores = [
@@ -101,6 +105,7 @@ def get_game_state(
         cartas_fechadas_restantes=estado.get("cartas_fechadas_restantes"),
         cartas_fechadas_disponiveis=estado.get("cartas_fechadas_disponiveis"),
         pode_comprar_carta_fechada=estado.get("pode_comprar_carta_fechada"),
+        bilhetes_restantes=estado.get("bilhetes_restantes"),
         maior_caminho=maior_caminho_status
     )
 

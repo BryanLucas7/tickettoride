@@ -40,7 +40,7 @@ class CardDrawService:
             Response formatado com informações de turno
             
         Example:
-            >>> resultado = jogo.comprarCartaDoBaralhoFechado(player_id)
+            >>> resultado = jogo.compras.comprarCartaDoBaralhoFechado(player_id)
             >>> return CardDrawService._processar_resultado_compra(jogo, resultado)
         """
         # Resultado já vem no formato correto (success/message) do domínio
@@ -70,7 +70,7 @@ class CardDrawService:
         
         Retorna formato pronto para API response.
         """
-        resultado_compra = jogo.comprarCartaDoBaralhoFechado(player_id)
+        resultado_compra = jogo.compras.comprarCartaDoBaralhoFechado(player_id)
         return CardDrawService._processar_resultado_compra(jogo, resultado_compra)
 
     @staticmethod
@@ -80,5 +80,5 @@ class CardDrawService:
         
         Retorna formato pronto para API response.
         """
-        resultado_compra = jogo.comprarCartaAberta(player_id, card_index)
+        resultado_compra = jogo.compras.comprarCartaAberta(player_id, card_index)
         return CardDrawService._processar_resultado_compra(jogo, resultado_compra)

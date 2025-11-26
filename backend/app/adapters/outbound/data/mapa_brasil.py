@@ -48,7 +48,7 @@ ROTAS_DATA: List[Dict[str, object]] = [
     {"id": "R06", "cidadeA": "RIO_DE_JANEIRO", "cidadeB": "SALVADOR", "cor": "AMARELO", "comprimento": 4},
     {"id": "R07", "cidadeA": "RIO_DE_JANEIRO", "cidadeB": "BRASILIA", "cor": "ROXO", "comprimento": 3},
     {"id": "R08", "cidadeA": "CAMPO_GRANDE", "cidadeB": "CUIABA", "cor": "LARANJA", "comprimento": 3},
-    {"id": "R09", "cidadeA": "CAMPO_GRANDE", "cidadeB": "BRASILIA", "cor": "CINZA", "comprimento": 3},
+    {"id": "R09", "cidadeA": "CAMPO_GRANDE", "cidadeB": "BRASILIA", "cor": "BRANCO", "comprimento": 3},
     {"id": "R09B", "cidadeA": "CUIABA", "cidadeB": "BRASILIA", "cor": "PRETO", "comprimento": 4},
     {"id": "R10", "cidadeA": "PALMAS", "cidadeB": "BRASILIA", "cor": "VERDE", "comprimento": 3},
     {"id": "R11", "cidadeA": "PALMAS", "cidadeB": "CUIABA", "cor": "AMARELO", "comprimento": 5},
@@ -58,13 +58,13 @@ ROTAS_DATA: List[Dict[str, object]] = [
     {"id": "R15", "cidadeA": "PALMAS", "cidadeB": "RECIFE", "cor": "AZUL", "comprimento": 5},
     {"id": "R16", "cidadeA": "PALMAS", "cidadeB": "SALVADOR", "cor": "LARANJA", "comprimento": 4},
     {"id": "R17", "cidadeA": "BRASILIA", "cidadeB": "SALVADOR", "cor": "VERDE", "comprimento": 4},
-    {"id": "R18", "cidadeA": "SALVADOR", "cidadeB": "RECIFE", "cor": "CINZA", "comprimento": 4},
-    {"id": "R19", "cidadeA": "RECIFE", "cidadeB": "FORTALEZA", "cor": "CINZA", "comprimento": 2},
+    {"id": "R18", "cidadeA": "SALVADOR", "cidadeB": "RECIFE", "cor": "BRANCO", "comprimento": 4},
+    {"id": "R19", "cidadeA": "RECIFE", "cidadeB": "FORTALEZA", "cor": "BRANCO", "comprimento": 2},
     {"id": "R20", "cidadeA": "FORTALEZA", "cidadeB": "BELEM", "cor": "CINZA", "comprimento": 5},
     {"id": "R21", "cidadeA": "BELEM", "cidadeB": "MANAUS", "cor": "CINZA", "comprimento": 6},
     {"id": "R22", "cidadeA": "MANAUS", "cidadeB": "CUIABA", "cor": "CINZA", "comprimento": 5},
     {"id": "R23", "cidadeA": "RIO_BRANCO", "cidadeB": "MANAUS", "cor": "LARANJA", "comprimento": 5},
-    {"id": "R24", "cidadeA": "RIO_BRANCO", "cidadeB": "CUIABA", "cor": "CINZA", "comprimento": 5},
+    {"id": "R24", "cidadeA": "RIO_BRANCO", "cidadeB": "CUIABA", "cor": "ROXO", "comprimento": 5},
 ]
 
 _COR_MAP: Dict[str, Cor] = {

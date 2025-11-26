@@ -29,10 +29,11 @@ from typing import List, Dict
 from ..domain.entities.jogador import Jogador
 from ..domain.entities.rota import Rota
 from ..domain.entities.carta_vagao import CartaVagao
-from ..domain.strategies.validador_rotas_duplas import ValidadorRotasDuplas
+from ..domain.strategies.rota_dupla_validator import RotaDuplaValidator
+from ..domain.calculators.calculadora_pontos_rota import CalculadoraPontosRota
 from .conquista_rota_validator import ConquistaRotaValidator
 from .conquista_rota_processor import ConquistaRotaProcessor
-from .conquista_rota_result_builder import ConquistaRotaResultBuilder
+from .conquista_rota_result_builder import ConquistaRotaResultBuilder, DadosConquista
 from ..domain.support.responses import normalize_result
 
 
@@ -62,7 +63,7 @@ class ConquistaRotaController:
         rota: Rota,
         cartas_usadas: List[CartaVagao],
         total_jogadores: int,
-        validador_duplas: ValidadorRotasDuplas = None
+        validador_duplas: RotaDuplaValidator = None
     ) -> Dict:
         """
         Processa conquista completa de rota.
@@ -95,10 +96,21 @@ class ConquistaRotaController:
         if not resultado_proc_norm['success']:
             return self.result_builder.construir_resultado_erro(resultado_proc_norm['message'])
         
-        # 4. Construir resultado final
+        # 4. Calcular pontos (separado do builder - SRP)
+        pontos = CalculadoraPontosRota.calcular_pontos(rota.comprimento)
+        
+        # 5. Construir dados para o result builder
+        dados = DadosConquista(
+            pontos=pontos,
+            cartas_descartadas=resultado_processamento['resultado_conquista']['cartas_descartadas'],
+            trens_removidos=resultado_processamento['resultado_conquista']['trens_removidos'],
+            trens_restantes=resultado_processamento['resultado_conquista']['trens_restantes'],
+            rota_dupla_bloqueada=resultado_processamento['rota_dupla_bloqueada']
+        )
+        
+        # 6. Construir resultado final
         return self.result_builder.construir_resultado_sucesso(
             jogador=jogador,
             rota=rota,
-            resultado_conquista=resultado_processamento['resultado_conquista'],
-            rota_dupla_bloqueada=resultado_processamento['rota_dupla_bloqueada']
+            dados=dados
         )

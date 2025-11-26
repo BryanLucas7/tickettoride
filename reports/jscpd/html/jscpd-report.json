@@ -1,0 +1,2234 @@
+{
+  "statistics": {
+    "detectionDate": "2025-11-24T21:55:27.207Z",
+    "formats": {
+      "typescript": {
+        "sources": {
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/index.ts": {
+            "lines": 20,
+            "tokens": 198,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/lib/services/gameApi.ts": {
+            "lines": 367,
+            "tokens": 2438,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useTicketFlow.ts": {
+            "lines": 149,
+            "tokens": 1080,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 11,
+            "duplicatedTokens": 87,
+            "percentage": 7.38,
+            "percentageTokens": 8.06,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useRouteConquest.ts": {
+            "lines": 227,
+            "tokens": 1617,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 11,
+            "duplicatedTokens": 87,
+            "percentage": 4.85,
+            "percentageTokens": 5.38,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/usePlayerData.ts": {
+            "lines": 123,
+            "tokens": 835,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useGamePolling.ts": {
+            "lines": 104,
+            "tokens": 702,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useGameEnd.ts": {
+            "lines": 132,
+            "tokens": 1101,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useCardPurchase.ts": {
+            "lines": 233,
+            "tokens": 1566,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 30,
+            "duplicatedTokens": 240,
+            "percentage": 12.88,
+            "percentageTokens": 15.33,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/types.ts": {
+            "lines": 134,
+            "tokens": 991,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 95,
+            "percentage": 5.22,
+            "percentageTokens": 9.59,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/index.ts": {
+            "lines": 11,
+            "tokens": 91,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/data/mapaBrasil.ts": {
+            "lines": 83,
+            "tokens": 795,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/types/game.ts": {
+            "lines": 135,
+            "tokens": 559,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/lib/gameRules.ts": {
+            "lines": 219,
+            "tokens": 1185,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/useGameEngine.ts": {
+            "lines": 275,
+            "tokens": 1812,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 95,
+            "percentage": 2.55,
+            "percentageTokens": 5.24,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/next-env.d.ts": {
+            "lines": 5,
+            "tokens": 14,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 2217,
+          "tokens": 14984,
+          "sources": 15,
+          "clones": 3,
+          "duplicatedLines": 33,
+          "duplicatedTokens": 302,
+          "percentage": 1.49,
+          "percentageTokens": 2.02,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "javascript": {
+        "sources": {
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/TrilhaPontuacao.tsx": {
+            "lines": 285,
+            "tokens": 2177,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/TelaFimJogo.tsx": {
+            "lines": 192,
+            "tokens": 1599,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/RotasConquistadasPanel.tsx": {
+            "lines": 0,
+            "tokens": 5,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/RotaDetalhesPanel.tsx": {
+            "lines": 31,
+            "tokens": 232,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/PainelBilhetesDestino.tsx": {
+            "lines": 178,
+            "tokens": 1370,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ModalBilhetes.tsx": {
+            "lines": 30,
+            "tokens": 231,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/MaoCartas.tsx": {
+            "lines": 95,
+            "tokens": 917,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/MaiorCaminhoWidget.tsx": {
+            "lines": 5,
+            "tokens": 33,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ListaJogadores.tsx": {
+            "lines": 8,
+            "tokens": 76,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/GameHeader.tsx": {
+            "lines": 13,
+            "tokens": 52,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ContadorTrens.tsx": {
+            "lines": 215,
+            "tokens": 1696,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/Board.tsx": {
+            "lines": 224,
+            "tokens": 1690,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/AcoesDoTurno.tsx": {
+            "lines": 99,
+            "tokens": 684,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/setup/page.tsx": {
+            "lines": 58,
+            "tokens": 510,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/jogo/page.tsx": {
+            "lines": 152,
+            "tokens": 1130,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/bilhetes-destino/page.tsx": {
+            "lines": 72,
+            "tokens": 635,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/postcss.config.mjs": {
+            "lines": 7,
+            "tokens": 42,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/next.config.mjs": {
+            "lines": 8,
+            "tokens": 53,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/eslint.config.mjs": {
+            "lines": 51,
+            "tokens": 315,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 1723,
+          "tokens": 13447,
+          "sources": 19,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "tsx": {
+        "sources": {
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/TrilhaPontuacao.tsx": {
+            "lines": 408,
+            "tokens": 2908,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/TelaFimJogo.tsx": {
+            "lines": 379,
+            "tokens": 3239,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 14,
+            "duplicatedTokens": 261,
+            "percentage": 3.69,
+            "percentageTokens": 8.06,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/RotasConquistadasPanel.tsx": {
+            "lines": 54,
+            "tokens": 391,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/RotaDetalhesPanel.tsx": {
+            "lines": 128,
+            "tokens": 959,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/PainelBilhetesDestino.tsx": {
+            "lines": 310,
+            "tokens": 2260,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ModalBilhetes.tsx": {
+            "lines": 66,
+            "tokens": 509,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/MinhasCartasPanel.tsx": {
+            "lines": 49,
+            "tokens": 355,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/MaoCartas.tsx": {
+            "lines": 317,
+            "tokens": 2587,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/MaiorCaminhoWidget.tsx": {
+            "lines": 84,
+            "tokens": 735,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ListaJogadores.tsx": {
+            "lines": 58,
+            "tokens": 459,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/GameHeader.tsx": {
+            "lines": 37,
+            "tokens": 202,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ContadorTrens.tsx": {
+            "lines": 351,
+            "tokens": 2743,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 14,
+            "duplicatedTokens": 261,
+            "percentage": 3.99,
+            "percentageTokens": 9.52,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/Board.tsx": {
+            "lines": 372,
+            "tokens": 3096,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/AcoesDoTurno.tsx": {
+            "lines": 166,
+            "tokens": 1200,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/setup/page.tsx": {
+            "lines": 183,
+            "tokens": 1758,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 11,
+            "duplicatedTokens": 119,
+            "percentage": 6.01,
+            "percentageTokens": 6.77,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/jogo/page.tsx": {
+            "lines": 252,
+            "tokens": 1824,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/bilhetes-destino/page.tsx": {
+            "lines": 289,
+            "tokens": 2592,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 11,
+            "duplicatedTokens": 119,
+            "percentage": 3.81,
+            "percentageTokens": 4.59,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/page.tsx": {
+            "lines": 24,
+            "tokens": 192,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/layout.tsx": {
+            "lines": 19,
+            "tokens": 154,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 3546,
+          "tokens": 28163,
+          "sources": 19,
+          "clones": 2,
+          "duplicatedLines": 25,
+          "duplicatedTokens": 380,
+          "percentage": 0.71,
+          "percentageTokens": 1.35,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "python": {
+        "sources": {
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/ticket_schemas.py": {
+            "lines": 73,
+            "tokens": 440,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/route_schemas.py": {
+            "lines": 49,
+            "tokens": 250,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/player_schemas.py": {
+            "lines": 64,
+            "tokens": 395,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/game_schemas.py": {
+            "lines": 124,
+            "tokens": 819,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/common_schemas.py": {
+            "lines": 38,
+            "tokens": 191,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/schemas/__init__.py": {
+            "lines": 84,
+            "tokens": 294,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/routes/ticket_routes.py": {
+            "lines": 117,
+            "tokens": 680,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/routes/route_routes.py": {
+            "lines": 81,
+            "tokens": 480,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/routes/player_routes.py": {
+            "lines": 116,
+            "tokens": 591,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/routes/map_routes.py": {
+            "lines": 51,
+            "tokens": 246,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/inbound/http/routes/game_routes.py": {
+            "lines": 147,
+            "tokens": 826,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/ports/repositories/jogo_repository_port.py": {
+            "lines": 92,
+            "tokens": 203,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/ports/repositories/__init__.py": {
+            "lines": 11,
+            "tokens": 0,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/support/responses.py": {
+            "lines": 37,
+            "tokens": 312,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/support/formatters.py": {
+            "lines": 25,
+            "tokens": 233,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/support/card_helpers.py": {
+            "lines": 57,
+            "tokens": 542,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/support/bilhete_helpers.py": {
+            "lines": 89,
+            "tokens": 743,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/strategies/validador_rotas_duplas.py": {
+            "lines": 246,
+            "tokens": 1352,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/strategies/rota_validation_strategy.py": {
+            "lines": 168,
+            "tokens": 1036,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/gerenciador_fim_jogo.py": {
+            "lines": 138,
+            "tokens": 641,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/gerenciador_de_turnos.py": {
+            "lines": 61,
+            "tokens": 389,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/gerenciador_baralho_vagoes.py": {
+            "lines": 198,
+            "tokens": 1175,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/estado_compra_cartas.py": {
+            "lines": 125,
+            "tokens": 612,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/descarte_manager.py": {
+            "lines": 64,
+            "tokens": 258,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/managers/conquista_rota_service.py": {
+            "lines": 96,
+            "tokens": 403,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/tabuleiro.py": {
+            "lines": 47,
+            "tokens": 501,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/rota.py": {
+            "lines": 37,
+            "tokens": 241,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/mao.py": {
+            "lines": 60,
+            "tokens": 372,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_inicializador.py": {
+            "lines": 91,
+            "tokens": 711,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_compras_service.py": {
+            "lines": 148,
+            "tokens": 973,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 20,
+            "duplicatedTokens": 186,
+            "percentage": 13.51,
+            "percentageTokens": 19.12,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_bilhetes_service.py": {
+            "lines": 78,
+            "tokens": 367,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_actions_service.py": {
+            "lines": 55,
+            "tokens": 462,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo.py": {
+            "lines": 207,
+            "tokens": 1446,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogador.py": {
+            "lines": 76,
+            "tokens": 657,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/cor.py": {
+            "lines": 15,
+            "tokens": 107,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/cidade.py": {
+            "lines": 38,
+            "tokens": 295,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/carta_vagao.py": {
+            "lines": 10,
+            "tokens": 83,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/carta.py": {
+            "lines": 5,
+            "tokens": 51,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/bilhete_destino.py": {
+            "lines": 56,
+            "tokens": 984,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/baralho.py": {
+            "lines": 28,
+            "tokens": 186,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/__init__.py": {
+            "lines": 25,
+            "tokens": 152,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/verificador_bilhetes.py": {
+            "lines": 127,
+            "tokens": 456,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/pontuacao_final_types.py": {
+            "lines": 66,
+            "tokens": 281,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/pontuacao_final_calculator.py": {
+            "lines": 146,
+            "tokens": 689,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/placar.py": {
+            "lines": 217,
+            "tokens": 1202,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/pathfinder_bfs.py": {
+            "lines": 185,
+            "tokens": 922,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/pathfinder.py": {
+            "lines": 96,
+            "tokens": 517,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/longest_path_dfs.py": {
+            "lines": 179,
+            "tokens": 851,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/longest_path.py": {
+            "lines": 113,
+            "tokens": 764,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/calculators/calculadora_pontos_rota.py": {
+            "lines": 56,
+            "tokens": 131,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/outbound/persistence/pickle_jogo_repository.py": {
+            "lines": 206,
+            "tokens": 1209,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/outbound/persistence/in_memory_jogo_repository.py": {
+            "lines": 77,
+            "tokens": 572,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/outbound/persistence/__init__.py": {
+            "lines": 17,
+            "tokens": 43,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/outbound/data/mapa_brasil.py": {
+            "lines": 130,
+            "tokens": 1767,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/services/conquista_rota_validator.py": {
+            "lines": 86,
+            "tokens": 384,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/services/conquista_rota_result_builder.py": {
+            "lines": 177,
+            "tokens": 802,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/services/conquista_rota_processor.py": {
+            "lines": 96,
+            "tokens": 416,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/services/conquista_rota_controller.py": {
+            "lines": 103,
+            "tokens": 499,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/ports/__init__.py": {
+            "lines": 11,
+            "tokens": 0,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/__init__.py": {
+            "lines": 11,
+            "tokens": 0,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/ticket_selection_service.py": {
+            "lines": 83,
+            "tokens": 423,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/ticket_purchase_service.py": {
+            "lines": 224,
+            "tokens": 772,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/ticket_preview_service.py": {
+            "lines": 173,
+            "tokens": 635,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/route_conquest_service.py": {
+            "lines": 227,
+            "tokens": 1363,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 95,
+            "duplicatedTokens": 326,
+            "percentage": 41.85,
+            "percentageTokens": 23.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/pontuacao_final_service.py": {
+            "lines": 211,
+            "tokens": 1157,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/longest_path_service.py": {
+            "lines": 127,
+            "tokens": 706,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/game_service.py": {
+            "lines": 88,
+            "tokens": 442,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/game_creation_service.py": {
+            "lines": 162,
+            "tokens": 707,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/game_action_service.py": {
+            "lines": 113,
+            "tokens": 403,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/card_draw_service.py": {
+            "lines": 83,
+            "tokens": 370,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/adapters/outbound/__init__.py": {
+            "lines": 10,
+            "tokens": 0,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/validators.py": {
+            "lines": 115,
+            "tokens": 452,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/response_builder.py": {
+            "lines": 197,
+            "tokens": 408,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/response_assembler.py": {
+            "lines": 240,
+            "tokens": 927,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/request_context.py": {
+            "lines": 100,
+            "tokens": 394,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/persistence_decorator.py": {
+            "lines": 125,
+            "tokens": 432,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/formatters.py": {
+            "lines": 281,
+            "tokens": 1233,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/exception_handlers.py": {
+            "lines": 79,
+            "tokens": 182,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/shared/bilhete_helpers.py": {
+            "lines": 4,
+            "tokens": 26,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/services/route_conquest_service.py": {
+            "lines": 153,
+            "tokens": 744,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 95,
+            "duplicatedTokens": 326,
+            "percentage": 62.09,
+            "percentageTokens": 43.82,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/__init__.py": {
+            "lines": 16,
+            "tokens": 0,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_ticket_purchase_refactored.py": {
+            "lines": 175,
+            "tokens": 839,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_rotas_do_jogador.py": {
+            "lines": 201,
+            "tokens": 2109,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_response_builder_turn_padronization.py": {
+            "lines": 203,
+            "tokens": 1304,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_response_builder_turn.py": {
+            "lines": 54,
+            "tokens": 336,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_request_context.py": {
+            "lines": 166,
+            "tokens": 1009,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_repositories.py": {
+            "lines": 210,
+            "tokens": 1559,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 236,
+            "percentage": 11.43,
+            "percentageTokens": 15.14,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_mao_remover_cartas.py": {
+            "lines": 275,
+            "tokens": 2052,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_formatters_carta.py": {
+            "lines": 88,
+            "tokens": 676,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_formatters.py": {
+            "lines": 194,
+            "tokens": 1601,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_exception_handlers.py": {
+            "lines": 246,
+            "tokens": 1425,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_dry_refactorings.py": {
+            "lines": 189,
+            "tokens": 1377,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/conftest.py": {
+            "lines": 9,
+            "tokens": 75,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/dependencies.py": {
+            "lines": 189,
+            "tokens": 688,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/constants.py": {
+            "lines": 74,
+            "tokens": 230,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/api.py": {
+            "lines": 111,
+            "tokens": 514,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 10621,
+          "tokens": 59774,
+          "sources": 96,
+          "clones": 5,
+          "duplicatedLines": 117,
+          "duplicatedTokens": 537,
+          "percentage": 1.1,
+          "percentageTokens": 0.9,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 18107,
+      "tokens": 116368,
+      "sources": 149,
+      "clones": 10,
+      "duplicatedLines": 175,
+      "duplicatedTokens": 1219,
+      "percentage": 0.97,
+      "percentageTokens": 1.05,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "tsx",
+      "lines": 15,
+      "fragment": "}\r\n\r\n/**\r\n * Mapa de cores CSS\r\n */\r\nconst CORES_JOGADORES: Record<string, { bg: string, text: string, border: string }> = {\r\n    red: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-500' },\r\n    blue: { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-500' },\r\n    green: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-500' },\r\n    yellow: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-500' },\r\n    purple: { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-500' },\r\n    orange: { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-500' },\r\n    pink: { bg: 'bg-pink-100', text: 'text-pink-800', border: 'border-pink-500' },\r\n    teal: { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-500' },\r\n}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/ContadorTrens.tsx",
+        "start": 40,
+        "end": 54,
+        "startLoc": {
+          "line": 40,
+          "column": 1,
+          "position": 160
+        },
+        "endLoc": {
+          "line": 54,
+          "column": 2,
+          "position": 421
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/features/game/components/TelaFimJogo.tsx",
+        "start": 61,
+        "end": 75,
+        "startLoc": {
+          "line": 61,
+          "column": 1,
+          "position": 270
+        },
+        "endLoc": {
+          "line": 75,
+          "column": 6,
+          "position": 532
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 12,
+      "fragment": ")\n        \n        await buscarEstadoJogo(gameId)\n        \n        setTimeout(() => {\n          setMensagem(`🔄 Turno completo! Vez do jogador ${data.next_player}`)\n          setTimeout(async () => {\n            await buscarEstadoJogo(gameId)\n          }, 2000)\n        }, 2000)\n      } else {\n        setMensagem(`❌ ${data.message || \"Não foi possível conquistar a rota\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useRouteConquest.ts",
+        "start": 176,
+        "end": 187,
+        "startLoc": {
+          "line": 176,
+          "column": 2,
+          "position": 1270
+        },
+        "endLoc": {
+          "line": 187,
+          "column": 37,
+          "position": 1357
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useTicketFlow.ts",
+        "start": 87,
+        "end": 98,
+        "startLoc": {
+          "line": 87,
+          "column": 6,
+          "position": 657
+        },
+        "endLoc": {
+          "line": 98,
+          "column": 28,
+          "position": 744
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 16,
+      "fragment": ")\n      }\n\n      await buscarEstadoJogo(gameId)\n\n      if (turnoFinalizado) {\n        setTimeout(() => {\n          setMensagem(`🔄 Turno completo! Vez do jogador ${data.next_player}`)\n          setTimeout(async () => {\n            await buscarEstadoJogo(gameId)\n          }, 2000)\n        }, 1500)\n      }\n    } catch (error) {\n      if (error instanceof ApiError) {\n        const detalhe = error.message || \"Não foi possível comprar esta carta.\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useCardPurchase.ts",
+        "start": 188,
+        "end": 203,
+        "startLoc": {
+          "line": 188,
+          "column": 87,
+          "position": 1310
+        },
+        "endLoc": {
+          "line": 203,
+          "column": 39,
+          "position": 1430
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/useCardPurchase.ts",
+        "start": 106,
+        "end": 121,
+        "startLoc": {
+          "line": 106,
+          "column": 9,
+          "position": 732
+        },
+        "endLoc": {
+          "line": 121,
+          "column": 42,
+          "position": 852
+        }
+      }
+    },
+    {
+      "format": "tsx",
+      "lines": 12,
+      "fragment": "const isCodespace = window.location.hostname.includes('app.github.dev')\r\n      const backendPort = '8000'\r\n      \r\n      let backendUrl\r\n      if (isCodespace) {\r\n        const baseUrl = window.location.hostname.replace(/-300[0-9]/, `-${backendPort}`)\r\n        backendUrl = `${window.location.protocol}//${baseUrl}`\r\n      } else {\r\n        backendUrl = `http://localhost:${backendPort}`\r\n      }\r\n      \r\n      const",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/bilhetes-destino/page.tsx",
+        "start": 134,
+        "end": 145,
+        "startLoc": {
+          "line": 134,
+          "column": 7,
+          "position": 1211
+        },
+        "endLoc": {
+          "line": 145,
+          "column": 6,
+          "position": 1330
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/app/setup/page.tsx",
+        "start": 57,
+        "end": 68,
+        "startLoc": {
+          "line": 57,
+          "column": 5,
+          "position": 598
+        },
+        "endLoc": {
+          "line": 68,
+          "column": 25,
+          "position": 717
+        }
+      }
+    },
+    {
+      "format": "typescript",
+      "lines": 8,
+      "fragment": "iniciarFluxoBilhetes: () => Promise<void>\n  confirmarBilhetes: () => Promise<void>\n  toggleBilheteSelecionado: (index: number, minimo?: number) => void\n  cancelarFluxoBilhetes: () => void\n  setMostrarModalBilhetes: React.Dispatch<React.SetStateAction<boolean>>\n  setBilhetesSelecionados: React.Dispatch<React.SetStateAction<number[]>>\n  \n  // Navegação",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/useGameEngine.ts",
+        "start": 91,
+        "end": 98,
+        "startLoc": {
+          "line": 91,
+          "column": 3,
+          "position": 522
+        },
+        "endLoc": {
+          "line": 98,
+          "column": 13,
+          "position": 617
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/frontend/hooks/game/types.ts",
+        "start": 90,
+        "end": 96,
+        "startLoc": {
+          "line": 90,
+          "column": 3,
+          "position": 612
+        },
+        "endLoc": {
+          "line": 96,
+          "column": 2,
+          "position": 704
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 11,
+      "fragment": ")\n\n        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente\n        if not self.jogo.estadoCompraCartas.turnoCompleto and not self._ha_opcao_de_compra():\n            self.jogo.estadoCompraCartas.turnoCompleto = True\n\n        return success_response(\n            self.jogo.estadoCompraCartas.obterMensagemStatus(),\n            carta=format_card(carta),\n            cartasCompradas=self.jogo.estadoCompraCartas.cartasCompradas,\n            turnoCompleto=self.jogo.estadoCompraCartas.turnoCompleto,",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_compras_service.py",
+        "start": 98,
+        "end": 108,
+        "startLoc": {
+          "line": 98,
+          "column": 13,
+          "position": 587
+        },
+        "endLoc": {
+          "line": 108,
+          "column": 2,
+          "position": 680
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/core/domain/entities/jogo_compras_service.py",
+        "start": 44,
+        "end": 55,
+        "startLoc": {
+          "line": 44,
+          "column": 2,
+          "position": 245
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 2,
+          "position": 340
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 47,
+      "fragment": "..shared.exception_handlers import handle_validation_errors\n\n\nclass RouteConquestService:\n    \"\"\"\n    Serviço responsável por conquista de rotas.\n    \n    Coordena busca de cartas, validação, conquista via controller\n    e passagem de turno automática.\n    \"\"\"\n    \n    def __init__(self, game_action_service: GameActionService = None):\n        \"\"\"\n        Inicializa o serviço.\n        \n        Args:\n            game_action_service: Service para passar turno e verificar fim\n        \"\"\"\n        self.game_action_service = game_action_service or GameActionService()\n    \n    @handle_validation_errors\n    def conquistar_rota(\n        self,\n        jogo: Jogo,\n        jogador: Jogador,\n        rota_id: str,\n        cartas_usadas_cores: List[str]\n    ) -> Dict[str, Any]:\n        \"\"\"\n        Conquista uma rota no tabuleiro.\n        \n        Args:\n            jogo: Instância do jogo\n            jogador: Jogador que está conquistando\n            rota_id: ID da rota a ser conquistada\n            cartas_usadas_cores: Lista de cores das cartas usadas (strings)\n            \n        Returns:\n            Dicionário com resultado da conquista e informações de turno\n            \n        Raises:\n            HTTPException: Se rota não existir, cartas forem inválidas, etc.\n        \"\"\"\n        # 1. Buscar rota pelo ID usando validador centralizado\n        rota = GameValidators.buscar_rota(jogo, rota_id)\n        \n        # 2. Buscar e remover cartas da mão do jogador usando método encapsulado",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/services/route_conquest_service.py",
+        "start": 22,
+        "end": 68,
+        "startLoc": {
+          "line": 22,
+          "column": 2,
+          "position": 146
+        },
+        "endLoc": {
+          "line": 68,
+          "column": 73,
+          "position": 289
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/route_conquest_service.py",
+        "start": 27,
+        "end": 73,
+        "startLoc": {
+          "line": 27,
+          "column": 2,
+          "position": 199
+        },
+        "endLoc": {
+          "line": 73,
+          "column": 7,
+          "position": 342
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 31,
+      "fragment": ")\n    \n    def _executar_conquista(\n        self,\n        jogo: Jogo,\n        jogador: Jogador,\n        rota: Rota,\n        cartas_usadas: List[CartaVagao]\n    ) -> Dict[str, Any]:\n        \"\"\"\n        Executa a conquista da rota via controller.\n        \n        Args:\n            jogo: Instância do jogo\n            jogador: Jogador conquistando\n            rota: Rota a conquistar\n            cartas_usadas: Cartas usadas na conquista\n            \n        Returns:\n            Resultado da conquista\n            \n        Raises:\n            HTTPException: Se conquista falhar\n        \"\"\"\n        # Garantir que descarte manager existe\n        descarte_manager = jogo.descarteManager or DescarteManager()\n        \n        # Obter ou criar gerenciador de fim de jogo (método movido para Jogo)\n        gerenciador_fim_jogo = jogo.obter_ou_criar_gerenciador_fim()\n        \n        # Criar controller e executar conquista",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/services/route_conquest_service.py",
+        "start": 78,
+        "end": 108,
+        "startLoc": {
+          "line": 78,
+          "column": 16,
+          "position": 366
+        },
+        "endLoc": {
+          "line": 108,
+          "column": 40,
+          "position": 465
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/route_conquest_service.py",
+        "start": 136,
+        "end": 165,
+        "startLoc": {
+          "line": 136,
+          "column": 13,
+          "position": 864
+        },
+        "endLoc": {
+          "line": 165,
+          "column": 7,
+          "position": 961
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 20,
+      "fragment": "raise HTTPException(status_code=400, detail=resultado_normalizado[\"message\"])\n        \n        return resultado\n    \n    def _formatar_resposta(\n        self,\n        resultado_conquista: Dict[str, Any],\n        resultado_turno: Dict[str, Any]\n    ) -> Dict[str, Any]:\n        \"\"\"\n        Formata resposta consolidada.\n        \n        Args:\n            resultado_conquista: Resultado da conquista\n            resultado_turno: Resultado da passagem de turno\n            \n        Returns:\n            Dicionário formatado para resposta da API\n        \"\"\"\n        from ..shared",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/services/route_conquest_service.py",
+        "start": 127,
+        "end": 146,
+        "startLoc": {
+          "line": 127,
+          "column": 13,
+          "position": 585
+        },
+        "endLoc": {
+          "line": 146,
+          "column": 7,
+          "position": 669
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/app/application/services/route_conquest_service.py",
+        "start": 201,
+        "end": 220,
+        "startLoc": {
+          "line": 201,
+          "column": 13,
+          "position": 1203
+        },
+        "endLoc": {
+          "line": 220,
+          "column": 2,
+          "position": 1287
+        }
+      }
+    },
+    {
+      "format": "python",
+      "lines": 13,
+      "fragment": ")\n        jogo1 = Jogo(id=1)\n        jogo2 = Jogo(id=2)\n        \n        repo.salvar(jogo1)\n        repo.salvar(jogo2)\n        jogos = repo.listar()\n        \n        assert len(jogos) == 2\n        assert any(j.id == 1 for j in jogos)\n        assert any(j.id == 2 for j in jogos)\n    \n    def test_deletar_jogo",
+      "tokens": 0,
+      "firstFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_repositories.py",
+        "start": 143,
+        "end": 155,
+        "startLoc": {
+          "line": 143,
+          "column": 16,
+          "position": 996
+        },
+        "endLoc": {
+          "line": 155,
+          "column": 18,
+          "position": 1114
+        }
+      },
+      "secondFile": {
+        "name": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/backend/tests/test_repositories.py",
+        "start": 43,
+        "end": 55,
+        "startLoc": {
+          "line": 43,
+          "column": 2,
+          "position": 238
+        },
+        "endLoc": {
+          "line": 55,
+          "column": 18,
+          "position": 356
+        }
+      }
+    }
+  ],
+  "filename": "/home/bryan/Projetos/Projetos/Ticket to Ride Engenharia de Software/node_modules/@jscpd/html-reporter/dist/templates/main.pug"
+}

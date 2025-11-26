@@ -16,11 +16,20 @@ class BilheteHelpers:
         jogador: "Jogador",
         bilhetes_escolhidos: List["BilheteDestino"],
         bilhetes_recusados: List["BilheteDestino"],
-        gerenciador_baralho,
+        gerenciador_bilhetes,
     ) -> None:
+        """
+        Processa a escolha de bilhetes pelo jogador.
+        
+        Args:
+            jogador: Jogador que está escolhendo
+            bilhetes_escolhidos: Bilhetes aceitos pelo jogador
+            bilhetes_recusados: Bilhetes recusados (devolvidos ao baralho)
+            gerenciador_bilhetes: GerenciadorBaralhoBilhetes para devolver recusados
+        """
         jogador.bilhetes.extend(bilhetes_escolhidos)
         if bilhetes_recusados:
-            gerenciador_baralho.devolverBilhetes(bilhetes_recusados)
+            gerenciador_bilhetes.devolver(bilhetes_recusados)
 
     @staticmethod
     def separar_bilhetes_por_indices(

@@ -17,7 +17,7 @@ from ...core.domain.entities.bilhete_destino import BilheteDestino
 from .game_action_service import GameActionService
 from ...shared.validators import GameValidators
 from ...shared.exception_handlers import handle_validation_errors
-from ...shared.bilhete_helpers import BilheteHelpers
+from ...core.domain.support.bilhete_helpers import BilheteHelpers
 
 
 class TicketPurchaseService:
@@ -123,7 +123,7 @@ class TicketPurchaseService:
         Raises:
             ValueError: Se não há bilhetes reservados para o jogador
         """
-        bilhetes_reservados = jogo.obter_bilhetes_reservados(player_id)
+        bilhetes_reservados = jogo.estado.bilhetes_state.obter_bilhetes_reservados(player_id)
         
         if not bilhetes_reservados:
             raise ValueError(
@@ -179,11 +179,11 @@ class TicketPurchaseService:
             jogador,
             bilhetes_escolhidos,
             bilhetes_recusados,
-            jogo.gerenciadorDeBaralho
+            jogo.gerenciadorDeBaralhoBilhetes
         )
         
         # Limpar reserva para permitir novas compras futuras
-        jogo.limpar_bilhetes_reservados(jogador.id)
+        jogo.estado.bilhetes_state.limpar_bilhetes_reservados(jogador.id)
     
     def _formatar_resposta(
         self,
@@ -205,13 +205,13 @@ class TicketPurchaseService:
             Dict com informações formatadas da compra
         """
         from ...shared.response_builder import ResponseBuilder
-        from ...shared.formatters import EntityFormatters
+        from ...shared.message_builder import MessageBuilder
         
         quantidade_escolhidos = len(bilhetes_escolhidos)
         quantidade_recusados = len(bilhetes_recusados)
         
-        # Usa formatador centralizado para criar mensagem
-        mensagem = EntityFormatters.criar_mensagem_compra_bilhetes(
+        # Usa MessageBuilder para criar mensagem (migrado de EntityFormatters)
+        mensagem = MessageBuilder.criar_mensagem_compra_bilhetes(
             jogador.nome,
             bilhetes_escolhidos,
             quantidade_recusados

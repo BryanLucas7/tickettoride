@@ -50,7 +50,7 @@ def get_initial_tickets(
     Refatoração DRY: Usa PlayerRequestContext para eliminar boilerplate
     """
 
-    bilhetes_pendentes = ctx.jogo.bilhetesPendentesEscolha.get(ctx.jogador.id)
+    bilhetes_pendentes = ctx.jogo.estado.bilhetes_state.obter_pendentes_escolha(ctx.jogador.id)
     if not bilhetes_pendentes:
         raise HTTPException(status_code=404, detail="No pending initial tickets for this player")
 

@@ -19,11 +19,11 @@ from contextlib import asynccontextmanager
 import logging
 
 # Importa repository para dependency injection
-from .adapters.outbound.persistence import PickleJogoRepository
-from .application.services.game_service import GameService
+from .dependencies.repositories import get_jogo_repository as di_get_jogo_repository
+from .dependencies.services import get_game_service as di_get_game_service
 
 # Importa routes
-from .adapters.inbound.http.routes import game_routes, player_routes, ticket_routes, route_routes
+from .adapters.inbound.http.routes import game_routes, player_routes, ticket_routes, route_routes, map_routes
 
 
 # Configuração de logging
@@ -36,10 +36,10 @@ logger = logging.getLogger(__name__)
 
 # Dependency Injection - Singleton instances
 # Repository implementation (pode trocar PickleJogoRepository por SQLJogoRepository sem mudar nada)
-jogo_repository = PickleJogoRepository()
+jogo_repository = di_get_jogo_repository()
 
 # Service layer (usa o repository)
-game_service = GameService(repository=jogo_repository)
+game_service = di_get_game_service(jogo_repository)
 
 
 @asynccontextmanager
@@ -95,6 +95,7 @@ app.include_router(game_routes.router, prefix="/games", tags=["Games"])
 app.include_router(player_routes.router, prefix="/games", tags=["Players"])
 app.include_router(ticket_routes.router, prefix="/games", tags=["Tickets"])
 app.include_router(route_routes.router, prefix="/games", tags=["Routes"])
+app.include_router(map_routes.router, prefix="/map", tags=["Map"])
 
 
 # Disponibiliza services para injeção de dependência nas routes

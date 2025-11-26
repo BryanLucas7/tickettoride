@@ -2,15 +2,18 @@
 PickleJogoRepository - Implementação de persistência usando Pickle
 
 Adapter que implementa JogoRepositoryPort usando serialização pickle.
+
+SRP Refactoring:
+- Repository: operações CRUD
+- BackupManager: gerenciamento de backup e escrita atômica
 """
 
 import pickle
 import logging
-import os
-import shutil
 from pathlib import Path
 from typing import Optional, List, Dict
 from ....core.ports.repositories.jogo_repository_port import JogoRepositoryPort
+from .backup_manager import BackupManager
 
 # Import condicional para evitar erro circular
 try:
@@ -29,7 +32,7 @@ class PickleJogoRepository(JogoRepositoryPort):
     Características:
     - Armazena jogos em arquivo .pkl único
     - Cache em memória para performance
-    - Thread-safe (depende do uso)
+    - Usa BackupManager para escrita atômica com backup
     
     Args:
         cache_file: Caminho do arquivo pickle (default: .games_cache.pkl)
@@ -43,73 +46,42 @@ class PickleJogoRepository(JogoRepositoryPort):
             cache_file: Caminho do arquivo pickle. Se None, usa padrão.
         """
         if cache_file is None:
-            # Usa o mesmo caminho do código atual
             cache_file = Path(__file__).resolve().parents[3] / ".games_cache.pkl"
         
         self.cache_file = cache_file
+        self._backup_manager = BackupManager(cache_file)
         self._games_cache: Dict[str, Jogo] = {}
         self._load_from_disk()
     
     def _load_from_disk(self) -> None:
         """Carrega jogos do arquivo pickle para o cache em memória."""
-        def _try_load(path: Path, origem: str) -> bool:
-            if not path.exists():
-                return False
-            try:
-                with path.open("rb") as f:
-                    cached_games = pickle.load(f)
-                if isinstance(cached_games, dict):
-                    self._games_cache.clear()
-                    self._games_cache.update(cached_games)
-                    logger.info("Carregados %d jogo(s) do cache%s", len(self._games_cache), origem)
-                    return True
-                logger.warning("Cache %s inválido: conteúdo não é dict", origem)
-            except Exception as exc:
-                logger.warning("Falha ao carregar cache%s: %s", origem, exc)
-            return False
-
-        # Tenta arquivo principal; se falhar, tenta backup
-        backup_path = self.cache_file.with_suffix(self.cache_file.suffix + ".bak")
-        if _try_load(self.cache_file, ""):
-            return
-        if _try_load(backup_path, " (backup)"):
-            return
-
-        # Nada carregado
-        self._games_cache = {}
-        logger.info("Iniciando cache vazio: arquivo inexistente ou corrompido.")
+        def load_pickle(path: Path) -> Optional[Dict]:
+            with path.open("rb") as f:
+                data = pickle.load(f)
+                if isinstance(data, dict):
+                    return data
+            return None
+        
+        resultado = self._backup_manager.carregar_com_fallback(load_pickle)
+        
+        if resultado is not None:
+            self._games_cache = resultado
+            logger.info("Carregados %d jogo(s) do cache", len(self._games_cache))
+        else:
+            self._games_cache = {}
+            logger.info("Iniciando cache vazio: arquivo inexistente ou corrompido.")
     
     def _persist_to_disk(self) -> None:
         """Persiste o cache em memória para o arquivo pickle."""
-        backup_path = self.cache_file.with_suffix(self.cache_file.suffix + ".bak")
-        temp_path = self.cache_file.with_suffix(self.cache_file.suffix + ".tmp")
+        def write_pickle(f):
+            pickle.dump(self._games_cache, f)
+        
         try:
-            self.cache_file.parent.mkdir(parents=True, exist_ok=True)
-            # Cria backup do arquivo atual antes de substituir
-            if self.cache_file.exists():
-                try:
-                    shutil.copy2(self.cache_file, backup_path)
-                except Exception as exc:
-                    logger.warning("Não foi possível criar backup do cache atual: %s", exc)
-
-            # Escrita atômica em arquivo temporário e replace
-            with temp_path.open("wb") as f:
-                pickle.dump(self._games_cache, f)
-                f.flush()
-                os.fsync(f.fileno())
-
-            temp_path.replace(self.cache_file)
+            self._backup_manager.escrever_atomico(write_pickle)
             logger.debug("Cache persistido: %d jogo(s)", len(self._games_cache))
         except Exception as exc:
             logger.error("Falha ao persistir cache: %s", exc)
             raise PersistenceError(f"Erro ao salvar jogos: {exc}") from exc
-        finally:
-            # Limpa temporário se sobrar
-            if temp_path.exists():
-                try:
-                    temp_path.unlink()
-                except Exception:
-                    pass
     
     def salvar(self, jogo: Jogo) -> None:
         """

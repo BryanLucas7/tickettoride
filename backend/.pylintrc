@@ -1,0 +1,38 @@
+[MAIN]
+# Python code analysis configuration
+
+[MESSAGES CONTROL]
+# Habilitar apenas detecção de código duplicado para análise focada
+# R0801: Similar lines in %s files (duplicate-code)
+enable=R0801
+
+# Desabilitar outras regras para focar apenas em duplicação
+# Comente a linha abaixo para análise completa do pylint
+disable=all
+
+[SIMILARITIES]
+# Número mínimo de linhas similares para considerar duplicação
+min-similarity-lines=4
+
+# Ignorar comentários ao comparar
+ignore-comments=yes
+
+# Ignorar docstrings ao comparar
+ignore-docstrings=yes
+
+# Ignorar imports ao comparar
+ignore-imports=yes
+
+# Ignorar assinaturas de funções
+ignore-signatures=yes
+
+[FORMAT]
+# Tamanho máximo da linha
+max-line-length=120
+
+[REPORTS]
+# Formato de saída
+output-format=colorized
+
+# Incluir score no relatório
+score=no

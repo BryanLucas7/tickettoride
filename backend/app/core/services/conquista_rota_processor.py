@@ -4,6 +4,10 @@ Processador de conquista de rotas.
 PADRÃO GRASP: Pure Fabrication
 - ConquistaRotaProcessor encapsula o processamento físico da conquista
 - Separa lógica de processamento do controller
+
+REFATORAÇÃO DRY: ConquistaRotaService foi integrado diretamente aqui
+para eliminar camada extra de indireção. A lógica é simples o suficiente
+para ficar em um único local.
 """
 
 from typing import List, Dict
@@ -11,12 +15,10 @@ from ..domain.entities.jogador import Jogador
 from ..domain.entities.rota import Rota
 from ..domain.entities.carta_vagao import CartaVagao
 from ..domain.managers.descarte_manager import DescarteManager
-from ..domain.managers.conquista_rota_service import ConquistaRotaService
-from ..domain.strategies.validador_rotas_duplas import ValidadorRotasDuplas
+from ..domain.strategies.rota_dupla_processor import RotaDuplaProcessor
 from ..domain.support.responses import (
     success_response,
     error_response,
-    normalize_result,
 )
 
 
@@ -35,6 +37,9 @@ class ConquistaRotaProcessor:
     - Information Expert: Conhece processo de conquista
     - Low Coupling: Recebe dependências por parâmetro
     - High Cohesion: Focado apenas em processamento
+    
+    REFATORAÇÃO DRY: Integra lógica que estava em ConquistaRotaService
+    para eliminar indireção desnecessária.
     """
 
     def __init__(self, descarte_manager: DescarteManager = None):
@@ -51,7 +56,7 @@ class ConquistaRotaProcessor:
         jogador: Jogador,
         rota: Rota,
         cartas_usadas: List[CartaVagao],
-        validador_duplas: ValidadorRotasDuplas = None,
+        validador_duplas: RotaDuplaProcessor = None,
         total_jogadores: int = 0
     ) -> Dict:
         """
@@ -67,19 +72,15 @@ class ConquistaRotaProcessor:
         Returns:
             Dict com resultado do processamento
         """
-        # 1. Processar conquista física (descarte, trens)
-        resultado_conquista = ConquistaRotaService.conquistar_rota(
+        # 1. Processar conquista física (descarte, trens) - INLINE de ConquistaRotaService
+        resultado_conquista = self._executar_conquista_fisica(
             jogador=jogador,
             rota=rota,
-            cartas_usadas=cartas_usadas,
-            descarte_manager=self.descarte_manager
+            cartas_usadas=cartas_usadas
         )
 
-        # Normaliza resposta de formato legado (português) para padrão (inglês)
-        resultado_normalizado = normalize_result(resultado_conquista)
-
-        if not resultado_normalizado["success"]:
-            return error_response(resultado_normalizado["message"])
+        if not resultado_conquista["success"]:
+            return error_response(resultado_conquista["message"])
 
         # 2. Processar rota dupla e marcar rota como conquistada
         rota_dupla_bloqueada = False
@@ -94,4 +95,71 @@ class ConquistaRotaProcessor:
             "Conquista processada com sucesso",
             resultado_conquista=resultado_conquista,
             rota_dupla_bloqueada=rota_dupla_bloqueada
+        )
+    
+    def _executar_conquista_fisica(
+        self,
+        jogador: Jogador,
+        rota: Rota,
+        cartas_usadas: List[CartaVagao]
+    ) -> Dict:
+        """
+        Executa conquista física: descarte de cartas e remoção de trens.
+        
+        REFATORAÇÃO DRY: Lógica movida de ConquistaRotaService para cá.
+        
+        Args:
+            jogador: Jogador conquistando
+            rota: Rota sendo conquistada
+            cartas_usadas: Cartas a descartar
+            
+        Returns:
+            Dict com resultado da operação
+        """
+        trens_necessarios = rota.comprimento
+        
+        # 1. Valida se jogador tem trens suficientes
+        if len(jogador.vagoes) < trens_necessarios:
+            return error_response(
+                f"Trens insuficientes: tem {len(jogador.vagoes)}, precisa de {trens_necessarios}",
+                cartas_descartadas=0,
+                trens_removidos=0,
+                trens_restantes=len(jogador.vagoes)
+            )
+        
+        # 2. Valida se jogador tem as cartas usadas
+        for carta in cartas_usadas:
+            if carta not in jogador.mao.cartasVagao:
+                return error_response(
+                    "Carta não encontrada na mão do jogador",
+                    cartas_descartadas=0,
+                    trens_removidos=0,
+                    trens_restantes=len(jogador.vagoes)
+                )
+        
+        # 3. Remove cartas da mão do jogador para evitar duplicidade
+        sucesso_remocao = jogador.removerCartasVagao(cartas_usadas)
+        if not sucesso_remocao:
+            return error_response(
+                "Falha ao remover cartas da mão",
+                cartas_descartadas=0,
+                trens_removidos=0,
+                trens_restantes=len(jogador.vagoes)
+            )
+        
+        # 4. Descarta cartas usadas
+        qtd_descartada = self.descarte_manager.descartar_cartas(cartas_usadas)
+        
+        # 5. Remove trens do jogador
+        trens_removidos = 0
+        for _ in range(trens_necessarios):
+            if jogador.vagoes:
+                jogador.vagoes.pop()
+                trens_removidos += 1
+        
+        return success_response(
+            f"Rota conquistada! Descartadas {qtd_descartada} cartas, removidos {trens_removidos} trens",
+            cartas_descartadas=qtd_descartada,
+            trens_removidos=trens_removidos,
+            trens_restantes=len(jogador.vagoes)
         )

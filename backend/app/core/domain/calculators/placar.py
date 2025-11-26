@@ -1,10 +1,11 @@
 """
+Placar - Gerenciador de pontuação dos jogadores.
 
 Implementa Observer Pattern para notificar mudanças de pontuação.
 
 GoF Pattern: Observer Pattern
 - Subject: Placar (notifica observers quando pontos mudam)
-- Observer: Interface para observers (PlacarObserver, UIObserver)
+- Observer: PontuacaoObserver (interface em pontuacao_observer.py)
 
 GRASP Principles Applied:
 - Information Expert: Placar calcula pontos baseado em comprimento
@@ -15,33 +16,22 @@ Design Decisions:
 - Tabela de pontos: {1→1, 2→2, 3→4, 4→7, 5→10, 6→15}
 - Observers notificados quando pontos mudam
 - Suporta múltiplos observers simultâneos
+
+Refatoração SRP:
+- PontuacaoObserver (interface) extraída para pontuacao_observer.py
+- LogPontuacaoObserver, HistoricoPontuacaoObserver extraídos para pontuacao_observers.py
 """
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import List, Dict
 from app.constants import TABELA_PONTOS_ROTA
 
+# Importa interface e implementações concretas dos arquivos separados (SRP)
+from .pontuacao_observer import PontuacaoObserver
+from .pontuacao_observers import LogPontuacaoObserver, HistoricoPontuacaoObserver
 
-class PontuacaoObserver(ABC):
-    """
-    Interface Observer para notificações de mudança de pontuação.
-    
-    GoF Observer Pattern: Interface Observer
-    """
-    
-    @abstractmethod
-    def atualizar_pontuacao(self, jogador_id: str, pontos_atuais: int, 
-                           pontos_adicionados: int, motivo: str):
-        """Notificação de mudança de pontuação
-        
-        Args:
-            jogador_id: ID do jogador
-            pontos_atuais: Pontuação total atual
-            pontos_adicionados: Quantidade de pontos adicionados (ou subtraídos se negativo)
-            motivo: Descrição da razão da mudança (ex: "Rota Los Angeles - Seattle")
-        """
-        pass
+# Re-exporta para compatibilidade com código existente
+__all__ = ['Placar', 'PontuacaoObserver', 'LogPontuacaoObserver', 'HistoricoPontuacaoObserver']
 
 
 @dataclass
@@ -163,57 +153,3 @@ class Placar:
         """Atualiza o placar com as pontuações atuais"""
         for jogador in self.jogadores:
             jogador.pontuacao = self.obter_pontuacao(jogador.id)
-
-
-# ==================== OBSERVERS CONCRETOS ====================
-
-@dataclass(eq=False)  # Comparação por identidade, não por valor
-class LogPontuacaoObserver(PontuacaoObserver):
-    """
-    Observer que loga mudanças de pontuação no console.
-    
-    GoF Observer Pattern: Concrete Observer
-    Útil para debug e testes.
-    """
-    
-    logs: List[str] = field(default_factory=list)
-    
-    def atualizar_pontuacao(self, jogador_id: str, pontos_atuais: int, 
-                           pontos_adicionados: int, motivo: str):
-        """Loga mudança de pontuação"""
-        if pontos_adicionados >= 0:
-            mensagem = f"[{jogador_id}] +{pontos_adicionados} pts por '{motivo}' → Total: {pontos_atuais}"
-        else:
-            mensagem = f"[{jogador_id}] {pontos_adicionados} pts por '{motivo}' → Total: {pontos_atuais}"
-        
-        self.logs.append(mensagem)
-        print(f"📊 {mensagem}")
-
-
-@dataclass(eq=False)  # Comparação por identidade, não por valor
-class HistoricoPontuacaoObserver(PontuacaoObserver):
-    """
-    Observer que mantém histórico completo de mudanças.
-    
-    GoF Observer Pattern: Concrete Observer
-    Útil para exibir timeline de pontuação na UI.
-    """
-    
-    historico: List[Dict] = field(default_factory=list)
-    
-    def atualizar_pontuacao(self, jogador_id: str, pontos_atuais: int, 
-                           pontos_adicionados: int, motivo: str):
-        """Registra mudança no histórico"""
-        entrada = {
-            "jogador_id": jogador_id,
-            "pontos_atuais": pontos_atuais,
-            "pontos_adicionados": pontos_adicionados,
-            "motivo": motivo,
-            "timestamp": len(self.historico)  # Índice como timestamp simplificado
-        }
-        self.historico.append(entrada)
-    
-    def obter_historico_jogador(self, jogador_id: str) -> List[Dict]:
-        """Retorna histórico filtrado por jogador"""
-        return [h for h in self.historico if h["jogador_id"] == jogador_id]
-

@@ -28,11 +28,11 @@ class JogoBilhetesService:
             True se a escolha foi válida e processada
         """
         # Verifica se o jogador tem bilhetes pendentes
-        if jogador_id not in self.jogo.bilhetesPendentesEscolha:
+        if not self.jogo.estado.bilhetes_state.tem_pendentes_escolha(jogador_id):
             print(f"❌ Jogador {jogador_id} não tem bilhetes pendentes de escolha")
             return False
 
-        bilhetes_pendentes = self.jogo.bilhetesPendentesEscolha[jogador_id]
+        bilhetes_pendentes = self.jogo.estado.bilhetes_state.obter_pendentes_escolha(jogador_id)
 
         # Validações centralizadas via BilheteHelpers
         try:
@@ -69,11 +69,11 @@ class JogoBilhetesService:
             jogador,
             bilhetes_aceitos,
             bilhetes_recusados,
-            self.jogo.gerenciadorDeBaralho
+            self.jogo.gerenciadorDeBaralhoBilhetes
         )
 
         # Remove os bilhetes pendentes deste jogador
-        del self.jogo.bilhetesPendentesEscolha[jogador_id]
+        self.jogo.estado.bilhetes_state.limpar_pendentes_escolha(jogador_id)
 
         print(f"✅ Jogador {jogador_id} escolheu {len(bilhetes_aceitos)} bilhetes, recusou {len(bilhetes_recusados)}")
         return True

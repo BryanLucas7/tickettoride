@@ -92,6 +92,7 @@ class GameStateResponse(BaseModel):
     cartas_fechadas_restantes: Optional[int] = None
     cartas_fechadas_disponiveis: Optional[int] = None
     pode_comprar_carta_fechada: Optional[bool] = None
+    bilhetes_restantes: Optional[int] = None
     maior_caminho: Optional[MaiorCaminhoStatusResponse] = None
     
     model_config = ConfigDict(

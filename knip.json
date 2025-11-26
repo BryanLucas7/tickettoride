@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "frontend/app/**/{page,layout,template,error,loading,not-found,route}.{ts,tsx,js,jsx}"
+  ],
+  "project": [
+    "frontend/**/*.{ts,tsx}"
+  ],
+  "paths": {
+    "@/*": [
+      "frontend/*"
+    ]
+  },
+  "typescript": {
+    "config": "frontend/tsconfig.json"
+  },
+  "ignore": [
+    "**/.next/**",
+    "**/node_modules/**",
+    "frontend/tsconfig.tsbuildinfo"
+  ]
+}

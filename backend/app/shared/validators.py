@@ -4,6 +4,8 @@ GameValidators - Validadores centralizados para entidades do jogo.
 Implementa Pure Fabrication (GRASP) para eliminar duplicação de código
 de validação em todo o sistema.
 
+REFATORAÇÃO DRY: Agora usa HttpErrors para criar exceções HTTP padronizadas.
+
 Responsabilidades:
 - Buscar e validar jogadores
 - Buscar e validar rotas
@@ -13,7 +15,7 @@ Responsabilidades:
 """
 
 from typing import List, TYPE_CHECKING
-from fastapi import HTTPException
+from .http_errors import HttpErrors
 
 if TYPE_CHECKING:
     from ..core.domain.entities.jogo import Jogo
@@ -44,10 +46,7 @@ class GameValidators:
         )
         
         if not rota:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Rota {rota_id} não encontrada"
-            )
+            raise HttpErrors.not_found("Rota", rota_id)
         
         return rota
     
@@ -69,12 +68,10 @@ class GameValidators:
             HTTPException(400): Se índice inválido
         """
         if indice < 0 or indice >= tamanho_lista:
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Índice {indice} inválido para {nome_campo}. "
-                    f"Deve estar entre 0 e {tamanho_lista - 1}"
-                )
+            raise HttpErrors.validation_error(
+                f"Índice {indice} inválido para {nome_campo}. "
+                f"Deve estar entre 0 e {tamanho_lista - 1}",
+                field=nome_campo
             )
     
     @staticmethod
@@ -97,18 +94,16 @@ class GameValidators:
             HTTPException(400): Se validação falhar
         """
         if not indices:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Selecione pelo menos {minimo} {nome_campo}(s)"
+            raise HttpErrors.validation_error(
+                f"Selecione pelo menos {minimo} {nome_campo}(s)",
+                field=nome_campo
             )
         
         if len(indices) < minimo:
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Selecione pelo menos {minimo} {nome_campo}(s). "
-                    f"Foram selecionados apenas {len(indices)}"
-                )
+            raise HttpErrors.validation_error(
+                f"Selecione pelo menos {minimo} {nome_campo}(s). "
+                f"Foram selecionados apenas {len(indices)}",
+                field=nome_campo
             )
         
         indices_unicos = set(indices)

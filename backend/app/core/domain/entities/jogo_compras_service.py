@@ -1,15 +1,67 @@
-from fastapi import HTTPException
+"""
+JogoComprasService - Serviço interno para operações de compra de cartas.
+
+NOTA ARQUITETURAL:
+Este é um "inner service" da entidade Jogo, não um serviço de aplicação.
+Está em entities/ porque:
+1. É parte intrínseca da entidade Jogo (delegação interna)
+2. Tem dependência bidirecional com Jogo (recebe self.jogo)
+3. Não orquestra múltiplas entidades externas
+
+Para compra de bilhetes (serviço de aplicação), use:
+- application/services/ticket_purchase_service.py
+
+Padrão GRASP: Controller (Jogo delega controle de compras)
+Princípio SRP: 
+- JogoComprasService: execução de compras
+- CompraValidator: validação de regras (refatorado para Composite Pattern)
+"""
 
 from ..support.responses import success_response, error_response
 from ..support.formatters import format_card, format_cards
-from ....shared.validators import GameValidators
+from ..validators import CompraValidator  # Refatorado: agora usa Composite
 
 
 class JogoComprasService:
-    """Responsável pelas operações de compra de cartas."""
+    """Responsável pela execução de operações de compra de cartas.
+    
+    Validações são delegadas para CompraValidator (SRP).
+    """
 
     def __init__(self, jogo):
         self.jogo = jogo
+        self.validator = CompraValidator(jogo)
+
+    def _finalizar_compra(self, jogador, carta, **extras) -> dict:
+        """Método auxiliar para finalizar uma compra de carta.
+        
+        Centraliza a lógica comum entre compra de carta fechada e aberta:
+        - Adiciona carta ao jogador
+        - Verifica encerramento automático de turno
+        - Formata resposta de sucesso
+        
+        Args:
+            jogador: Jogador que está comprando
+            carta: Carta comprada
+            **extras: Campos adicionais para a resposta (ex: cartasAbertas)
+            
+        Returns:
+            Dict com sucesso, carta e informações de turno
+        """
+        jogador.comprarCartaVagao(carta)
+        
+        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente
+        # Usa validator.ha_opcao_de_compra() (SRP - validação no validator)
+        if not self.jogo.estado.estado_compra.turnoCompleto and not self.validator.ha_opcao_de_compra():
+            self.jogo.estado.estado_compra.turnoCompleto = True
+        
+        return success_response(
+            self.jogo.estado.estado_compra.obterMensagemStatus(),
+            carta=format_card(carta),
+            cartasCompradas=self.jogo.estado.estado_compra.cartasCompradas,
+            turnoCompleto=self.jogo.estado.estado_compra.turnoCompleto,
+            **extras
+        )
 
     def comprarCartaDoBaralhoFechado(self, jogador_id: str) -> dict:
         """Compra uma carta do baralho fechado
@@ -21,38 +73,26 @@ class JogoComprasService:
             Dict com sucesso, carta comprada e mensagem
 
         Aplica GRASP Controller: Jogo coordena a ação de compra
+        SRP: Validações delegadas para CompraValidator
         """
-        # Verifica se pode comprar do fechado
-        if not self.jogo.estadoCompraCartas.podeComprarCartaFechada():
-            return error_response(self.jogo.estadoCompraCartas.obterMensagemStatus())
-
-        # Busca jogador e valida existência
-        jogador = self.jogo.gerenciadorDeTurnos.obter_jogador_por_id(jogador_id)
-        if not jogador:
-            return error_response(f"Jogador {jogador_id} não encontrado")
+        # Validação completa usando CompraValidator (SRP)
+        resultado = self.validator.validar_compra_carta_fechada_completa(jogador_id)
+        if resultado.invalido:
+            return error_response(resultado.erro)
+        
+        jogador = resultado.jogador
 
         # Compra carta do baralho
-        carta = self.jogo.gerenciadorDeBaralho.comprarCartaVagaoViewer(visivel=False)
+        carta = self.jogo.gerenciadorDeBaralhoVagoes.comprarCartaVagaoViewer(visivel=False)
 
         if not carta:
             return error_response("Baralho vazio")
 
-        # Adiciona carta ao jogador
-        jogador.comprarCartaVagao(carta)
-
         # Registra compra no estado
-        self.jogo.estadoCompraCartas.registrarCompraCartaFechada()
+        self.jogo.estado.estado_compra.registrarCompraCartaFechada()
 
-        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente
-        if not self.jogo.estadoCompraCartas.turnoCompleto and not self._ha_opcao_de_compra():
-            self.jogo.estadoCompraCartas.turnoCompleto = True
-
-        return success_response(
-            self.jogo.estadoCompraCartas.obterMensagemStatus(),
-            carta=format_card(carta),
-            cartasCompradas=self.jogo.estadoCompraCartas.cartasCompradas,
-            turnoCompleto=self.jogo.estadoCompraCartas.turnoCompleto
-        )
+        # Finaliza compra usando método auxiliar
+        return self._finalizar_compra(jogador, carta)
 
     def comprarCartaAberta(self, jogador_id: str, indice: int) -> dict:
         """Compra uma carta das 5 cartas abertas
@@ -66,84 +106,40 @@ class JogoComprasService:
 
         Aplica GRASP Controller: Jogo coordena a ação de compra
         Aplica GRASP Information Expert: GerenciadorDeBaralho valida e executa compra
+        SRP: Validações delegadas para CompraValidator
         """
-        # Busca jogador e valida existência
-        jogador = self.jogo.gerenciadorDeTurnos.obter_jogador_por_id(jogador_id)
-        if not jogador:
-            return error_response(f"Jogador {jogador_id} não encontrado")
-
-        # Valida índice usando validador centralizado
-        cartas_abertas = self.jogo.gerenciadorDeBaralho.obterCartasAbertas()
-        try:
-            GameValidators.validar_indice(indice, len(cartas_abertas), "carta aberta")
-        except HTTPException as e:
-            return error_response(e.detail)
-
-        carta_desejada = cartas_abertas[indice]
-
-        # Verifica se pode comprar esta carta (regras de locomotiva)
-        if not self.jogo.estadoCompraCartas.podeComprarCartaAberta(ehLocomotiva=carta_desejada.ehLocomotiva):
-            return error_response(self.jogo.estadoCompraCartas.obterMensagemStatus())
+        # Validação completa usando CompraValidator (SRP)
+        resultado, carta_desejada = self.validator.validar_compra_carta_aberta_completa(
+            jogador_id, indice
+        )
+        if resultado.invalido:
+            return error_response(resultado.erro)
+        
+        jogador = resultado.jogador
 
         # Compra carta aberta (repõe automaticamente)
-        carta = self.jogo.gerenciadorDeBaralho.comprarCartaVagaoVisivel(indice)
+        carta = self.jogo.gerenciadorDeBaralhoVagoes.comprarCartaVagaoVisivel(indice)
 
         if not carta:
             return error_response("Erro ao comprar carta")
 
-        # Adiciona carta ao jogador
-        jogador.comprarCartaVagao(carta)
-
         # Registra compra no estado
-        self.jogo.estadoCompraCartas.registrarCompraCartaAberta(ehLocomotiva=carta.ehLocomotiva)
+        self.jogo.estado.estado_compra.registrarCompraCartaAberta(ehLocomotiva=carta.ehLocomotiva)
 
-        # Edge case: se não há mais cartas possíveis para compra, encerra turno automaticamente
-        if not self.jogo.estadoCompraCartas.turnoCompleto and not self._ha_opcao_de_compra():
-            self.jogo.estadoCompraCartas.turnoCompleto = True
-
-        return success_response(
-            self.jogo.estadoCompraCartas.obterMensagemStatus(),
-            carta=format_card(carta),
-            cartasCompradas=self.jogo.estadoCompraCartas.cartasCompradas,
-            turnoCompleto=self.jogo.estadoCompraCartas.turnoCompleto,
-            cartasAbertas=format_cards(self.jogo.gerenciadorDeBaralho.obterCartasAbertas())
+        # Finaliza compra usando método auxiliar (inclui cartas abertas atualizadas)
+        return self._finalizar_compra(
+            jogador, 
+            carta,
+            cartasAbertas=format_cards(self.jogo.gerenciadorDeBaralhoVagoes.obterCartasAbertas())
         )
 
     def obterEstadoCompra(self) -> dict:
-        """Retorna o estado atual de compra de cartas
+        """Retorna o estado atual de compra de cartas.
+
+        Refatoração SRP: Formatação delegada para CompraStateAssembler.
 
         Returns:
             Dict com informações do estado de compra
         """
-        return {
-            "cartasCompradas": self.jogo.estadoCompraCartas.cartasCompradas,
-            "comprouLocomotivaDasAbertas": self.jogo.estadoCompraCartas.comprouLocomotivaDasAbertas,
-            "turnoCompleto": self.jogo.estadoCompraCartas.turnoCompleto,
-            "podeComprarFechada": self.jogo.estadoCompraCartas.podeComprarCartaFechada(),
-            "cartasAbertas": format_cards(self.jogo.gerenciadorDeBaralho.obterCartasAbertas()) if self.jogo.gerenciadorDeBaralho else [],
-            "mensagem": self.jogo.estadoCompraCartas.obterMensagemStatus()
-        }
-
-    def _ha_opcao_de_compra(self) -> bool:
-        """
-        Verifica se ainda existe alguma carta que possa ser comprada neste turno.
-        Considera regras do estado (locomotiva, limite 2 cartas) e disponibilidade.
-        """
-        estado = self.jogo.estadoCompraCartas
-
-        if estado.turnoCompleto:
-            return False
-
-        baralho = self.jogo.gerenciadorDeBaralho
-
-        # Há carta fechada disponível no baralho/descarte e regra permite?
-        if estado.podeComprarCartaFechada():
-            if (baralho.baralhoVagoes and len(baralho.baralhoVagoes.cartas) > 0) or baralho.descarteVagoes:
-                return True
-
-        # Há alguma carta aberta permitida pelo estado?
-        for carta in baralho.obterCartasAbertas():
-            if estado.podeComprarCartaAberta(ehLocomotiva=carta.ehLocomotiva):
-                return True
-
-        return False
+        from app.shared.assemblers import CompraStateAssembler
+        return CompraStateAssembler.montar(self.jogo)

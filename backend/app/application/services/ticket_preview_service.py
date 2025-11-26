@@ -25,7 +25,7 @@ Refatoração DRY:
 from typing import Dict, Any, List
 from ...core.domain.entities.jogo import Jogo
 from ...core.domain.entities.bilhete_destino import BilheteDestino
-from ...shared.bilhete_helpers import BilheteHelpers
+from ...core.domain.support.bilhete_helpers import BilheteHelpers
 from ...shared.formatters import EntityFormatters
 
 
@@ -68,11 +68,11 @@ class TicketPreviewService:
         TicketPreviewService._validar_quantidade(quantidade)
         
         # Validar baralho inicializado
-        if not jogo.gerenciadorDeBaralho:
+        if not jogo.gerenciadorDeBaralhoVagoes:
             raise ValueError("Deck not initialized")
         
         # Verificar se já existem bilhetes reservados
-        bilhetes_reservados = jogo.obter_bilhetes_reservados(player_id)
+        bilhetes_reservados = jogo.estado.bilhetes_state.obter_bilhetes_reservados(player_id)
         
         if bilhetes_reservados:
             # Retornar bilhetes já reservados
@@ -85,7 +85,7 @@ class TicketPreviewService:
         )
         
         # Reservar bilhetes para o jogador
-        jogo.reservar_bilhetes(player_id, bilhetes_reservados)
+        jogo.estado.bilhetes_state.reservar_bilhetes(player_id, bilhetes_reservados)
         
         return TicketPreviewService._formatar_resposta(bilhetes_reservados)
     
@@ -129,7 +129,7 @@ class TicketPreviewService:
         Raises:
             ValueError: Se não houver bilhetes disponíveis
         """
-        cartas_disponiveis = jogo.gerenciadorDeBaralho.baralhoBilhetes.cartas
+        cartas_disponiveis = jogo.gerenciadorDeBaralhoBilhetes.baralhoBilhetes.cartas
         
         if not cartas_disponiveis:
             raise ValueError("No tickets available")
@@ -139,7 +139,7 @@ class TicketPreviewService:
         bilhetes_sorteados = []
         
         for _ in range(quantidade_real):
-            bilhete = jogo.gerenciadorDeBaralho.baralhoBilhetes.comprar()
+            bilhete = jogo.gerenciadorDeBaralhoBilhetes.baralhoBilhetes.comprar()
             if bilhete:
                 bilhetes_sorteados.append(bilhete)
         
@@ -166,7 +166,8 @@ class TicketPreviewService:
             "tickets": [
                 {
                     "index": indice,
-                    **EntityFormatters.formatar_bilhete(bilhete, formato="compacto")
+                    # Usa formato padrão para incluir cidadeOrigem/cidadeDestino usados no frontend
+                    **EntityFormatters.formatar_bilhete(bilhete, completo=False)
                 }
                 for indice, bilhete in enumerate(bilhetes)
             ],

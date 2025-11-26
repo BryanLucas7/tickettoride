@@ -1,0 +1,371 @@
+/**
+ * Testes para componentes RotaDetalhes
+ * 
+ * NOTA: Este arquivo está preparado para quando Jest/Vitest for configurado.
+ * Para executar os testes, adicione ao package.json:
+ * 
+ * npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
+ * 
+ * @module tests/components/RotaDetalhes.test
+ */
+
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { RotaDetalhesPanel } from '@/features/game/components/RotaDetalhes'
+import { RotaConquistada } from '@/features/game/components/RotaDetalhes/RotaConquistada'
+import { RotaBloqueada } from '@/features/game/components/RotaDetalhes/RotaBloqueada'
+import { RotaAguardando } from '@/features/game/components/RotaDetalhes/RotaAguardando'
+import { RotaSemCartas } from '@/features/game/components/RotaDetalhes/RotaSemCartas'
+import { RotaSelecaoCartas } from '@/features/game/components/RotaDetalhes/RotaSelecaoCartas'
+import type { UseGameEngineReturn } from '@/hooks/useGameEngine'
+
+// ============================================
+// MOCKS E HELPERS
+// ============================================
+
+const mockColorHelpers = {
+  getCoresBg: vi.fn((cor: string) => `bg-${cor}`),
+  getCorTexto: vi.fn((cor: string) => `text-${cor}`),
+  getLetraCor: vi.fn((cor: string) => cor.charAt(0).toUpperCase())
+}
+
+const createMockGame = (overrides: Partial<UseGameEngineReturn> = {}): UseGameEngineReturn => ({
+  gameState: null,
+  carregando: false,
+  mensagem: '',
+  minhasCartas: [],
+  meusBilhetes: [],
+  jogadorAtualId: 'player-1',
+  ehMinhaVez: true,
+  rotasDoJogo: [],
+  rotaSelecionada: null,
+  rotaSelecionadaInfo: null,
+  cartasSelecionadas: [],
+  podeConquistarRota: false,
+  cartasCompradasNesteTurno: 0,
+  turnoCompraCompleto: false,
+  bloquearLocomotivaAberta: false,
+  mensagemCompraCartas: null,
+  fluxoCompraCartasAtivo: false,
+  acaoCartasBloqueiaOutras: false,
+  baralhoPossivelmenteVazio: false,
+  mostrarModalBilhetes: false,
+  bilhetesDisponiveis: [],
+  bilhetesSelecionados: [],
+  fluxoBilhetesAtivo: false,
+  carregandoBilhetesPreview: false,
+  pontuacaoFinal: [],
+  mostrarTelaFimJogo: false,
+  mensagemFimJogo: null,
+  comprarCartaFechada: vi.fn(),
+  comprarCartaAberta: vi.fn(),
+  conquistarRota: vi.fn(),
+  toggleCartaSelecionada: vi.fn(),
+  handleSelecaoRotaMapa: vi.fn(),
+  setCartasSelecionadas: vi.fn(),
+  setRotaSelecionada: vi.fn(),
+  iniciarFluxoBilhetes: vi.fn(),
+  confirmarBilhetes: vi.fn(),
+  toggleBilheteSelecionado: vi.fn(),
+  cancelarFluxoBilhetes: vi.fn(),
+  setMostrarModalBilhetes: vi.fn(),
+  setBilhetesSelecionados: vi.fn(),
+  handleVoltarMenu: vi.fn(),
+  handleJogarNovamente: vi.fn(),
+  setMensagem: vi.fn(),
+  buscarEstadoJogo: vi.fn(),
+  ...overrides
+})
+
+// ============================================
+// TESTES - RotaConquistada
+// ============================================
+
+describe('RotaConquistada', () => {
+  it('deve exibir mensagem com nome do proprietário', () => {
+    render(<RotaConquistada proprietarioNome="João" />)
+    
+    expect(screen.getByText(/já foi conquistada por João/i)).toBeInTheDocument()
+  })
+
+  it('deve exibir mensagem genérica quando proprietário é null', () => {
+    render(<RotaConquistada proprietarioNome={null} />)
+    
+    expect(screen.getByText(/outro jogador/i)).toBeInTheDocument()
+  })
+})
+
+// ============================================
+// TESTES - RotaBloqueada
+// ============================================
+
+describe('RotaBloqueada', () => {
+  it('deve exibir mensagem para bloqueio por cartas', () => {
+    render(<RotaBloqueada motivo="cartas" />)
+    
+    expect(screen.getByText(/Conclua a compra de cartas/i)).toBeInTheDocument()
+  })
+
+  it('deve exibir mensagem para bloqueio por bilhetes', () => {
+    render(<RotaBloqueada motivo="bilhetes" />)
+    
+    expect(screen.getByText(/Conclua a compra de bilhetes/i)).toBeInTheDocument()
+  })
+})
+
+// ============================================
+// TESTES - RotaAguardando
+// ============================================
+
+describe('RotaAguardando', () => {
+  it('deve exibir mensagem de aguardo', () => {
+    render(<RotaAguardando />)
+    
+    expect(screen.getByText(/Aguarde sua vez/i)).toBeInTheDocument()
+  })
+})
+
+// ============================================
+// TESTES - RotaSemCartas
+// ============================================
+
+describe('RotaSemCartas', () => {
+  it('deve exibir mensagem de falta de cartas', () => {
+    render(<RotaSemCartas />)
+    
+    expect(screen.getByText(/não tem cartas disponíveis/i)).toBeInTheDocument()
+  })
+})
+
+// ============================================
+// TESTES - RotaSelecaoCartas
+// ============================================
+
+describe('RotaSelecaoCartas', () => {
+  const mockRotaMapa = {
+    comprimento: 3,
+    cor: 'vermelho'
+  }
+
+  it('deve exibir número de cartas necessárias', () => {
+    const mockGame = createMockGame({
+      minhasCartas: [
+        { cor: 'vermelho' },
+        { cor: 'vermelho' },
+        { cor: 'vermelho' }
+      ]
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={mockRotaMapa}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+    
+    expect(screen.getByText(/Selecione 3 cartas/i)).toBeInTheDocument()
+  })
+
+  it('deve exibir instrução diferente para rota cinza', () => {
+    const rotaCinza = { comprimento: 2, cor: 'cinza' }
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }, { cor: 'azul' }]
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={rotaCinza}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+    
+    expect(screen.getByText(/mesma cor à sua escolha/i)).toBeInTheDocument()
+  })
+
+  it('deve chamar toggleCartaSelecionada ao clicar em carta', () => {
+    const mockToggle = vi.fn()
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }],
+      toggleCartaSelecionada: mockToggle
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={mockRotaMapa}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+
+    const carta = screen.getByRole('button', { name: /V/i })
+    fireEvent.click(carta)
+
+    expect(mockToggle).toHaveBeenCalledWith(0, 3)
+  })
+
+  it('deve desabilitar botão conquistar quando não pode', () => {
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }],
+      podeConquistarRota: false
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={mockRotaMapa}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+
+    const botaoConquistar = screen.getByRole('button', { name: /Conquistar/i })
+    expect(botaoConquistar).toBeDisabled()
+  })
+
+  it('deve habilitar botão conquistar quando pode', () => {
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }],
+      podeConquistarRota: true
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={mockRotaMapa}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+
+    const botaoConquistar = screen.getByRole('button', { name: /Conquistar/i })
+    expect(botaoConquistar).not.toBeDisabled()
+  })
+
+  it('deve chamar setCartasSelecionadas ao limpar seleção', () => {
+    const mockSetCartas = vi.fn()
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }],
+      setCartasSelecionadas: mockSetCartas
+    })
+
+    render(
+      <RotaSelecaoCartas
+        rotaMapa={mockRotaMapa}
+        game={mockGame}
+        {...mockColorHelpers}
+      />
+    )
+
+    const botaoLimpar = screen.getByRole('button', { name: /Limpar/i })
+    fireEvent.click(botaoLimpar)
+
+    expect(mockSetCartas).toHaveBeenCalledWith([])
+  })
+})
+
+// ============================================
+// TESTES - RotaDetalhesPanel (Orquestrador)
+// ============================================
+
+describe('RotaDetalhesPanel', () => {
+  const mockRotaMapa = { comprimento: 3, cor: 'vermelho' }
+
+  it('deve renderizar RotaConquistada quando rota está conquistada', () => {
+    const mockGame = createMockGame()
+    const rotaConquistada = { conquistada: true, proprietario_nome: 'Maria' }
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={rotaConquistada}
+        game={mockGame}
+        ehMinhaVez={true}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/já foi conquistada por Maria/i)).toBeInTheDocument()
+  })
+
+  it('deve renderizar RotaBloqueada quando ação de cartas bloqueia', () => {
+    const mockGame = createMockGame({ acaoCartasBloqueiaOutras: true })
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={null}
+        game={mockGame}
+        ehMinhaVez={true}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/Conclua a compra de cartas/i)).toBeInTheDocument()
+  })
+
+  it('deve renderizar RotaBloqueada quando fluxo de bilhetes ativo', () => {
+    const mockGame = createMockGame({ fluxoBilhetesAtivo: true })
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={null}
+        game={mockGame}
+        ehMinhaVez={true}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/Conclua a compra de bilhetes/i)).toBeInTheDocument()
+  })
+
+  it('deve renderizar RotaAguardando quando não é vez do jogador', () => {
+    const mockGame = createMockGame()
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={null}
+        game={mockGame}
+        ehMinhaVez={false}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/Aguarde sua vez/i)).toBeInTheDocument()
+  })
+
+  it('deve renderizar RotaSemCartas quando jogador não tem cartas', () => {
+    const mockGame = createMockGame({ minhasCartas: [] })
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={null}
+        game={mockGame}
+        ehMinhaVez={true}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/não tem cartas disponíveis/i)).toBeInTheDocument()
+  })
+
+  it('deve renderizar RotaSelecaoCartas quando tudo ok', () => {
+    const mockGame = createMockGame({
+      minhasCartas: [{ cor: 'vermelho' }, { cor: 'vermelho' }]
+    })
+
+    render(
+      <RotaDetalhesPanel
+        rotaMapa={mockRotaMapa}
+        rotaDoJogo={null}
+        game={mockGame}
+        ehMinhaVez={true}
+        {...mockColorHelpers}
+      />
+    )
+
+    expect(screen.getByText(/Selecione 3 cartas/i)).toBeInTheDocument()
+  })
+})

@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"app/jogo/page.tsx -> @/features/game/components/TelaFimJogo\":{\"id\":\"app/jogo/page.tsx -> @/features/game/components/TelaFimJogo\",\"files\":[]}}"

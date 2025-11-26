@@ -52,10 +52,6 @@ class GerenciadorDeTurnos:
             return None
         self.indiceAtual = (self.indiceAtual + 1) % len(self.jogadores)
         return self.getJogadorAtual()
-    
-    def nextTurn(self):
-        """Alias para proximoJogador (compatibilidade)"""
-        return self.proximoJogador()
 
     def reiniciarTurnos(self):
         """Reinicia os turnos para o primeiro jogador"""

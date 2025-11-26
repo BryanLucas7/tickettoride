@@ -1,12 +1,13 @@
-from app.core.domain.managers.gerenciador_baralho_vagoes import GerenciadorBaralhoVagoes as GerenciadorDeBaralho
+from app.core.domain.managers.gerenciador_baralho_vagoes import GerenciadorBaralhoVagoes
+from app.core.domain.managers.gerenciador_baralho_bilhetes import GerenciadorBaralhoBilhetes
 from app.core.domain.calculators.placar import Placar
 from app.core.domain.managers.descarte_manager import DescarteManager
-from app.core.domain.strategies.validador_rotas_duplas import ValidadorRotasDuplas
+from app.core.domain.strategies.rota_dupla_validator import RotaDuplaValidator
 from app.core.domain.calculators.verificador_bilhetes import VerificadorBilhetes
 from app.constants import CARTAS_INICIAIS
 
 try:
-    from ...adapters.outbound.data.mapa_brasil import carregar_tabuleiro_brasil
+    from ....adapters.outbound.data.mapa_brasil import carregar_tabuleiro_brasil
 except ImportError:  # Suporte para execuções fora do pacote "app"
     from app.adapters.outbound.data.mapa_brasil import carregar_tabuleiro_brasil
 
@@ -22,18 +23,19 @@ class JogoInicializador:
 
         Aplica princípios GRASP:
         - Controller: Jogo coordena a inicialização
-        - Information Expert: GerenciadorDeBaralho possui as cartas
+        - Information Expert: Cada gerenciador possui suas cartas (SRP)
         """
         self._configurar_tabuleiro_padrao()
 
-        # Inicializa componentes
-        self.jogo.placar = Placar(jogadores=self.jogo.gerenciadorDeTurnos.jogadores)
-        self.jogo.gerenciadorDeBaralho = GerenciadorDeBaralho()
+        # Inicializa componentes - SRP: gerenciadores separados para vagões e bilhetes
+        self.jogo.estado.placar = Placar(jogadores=self.jogo.gerenciadorDeTurnos.jogadores)
+        self.jogo.gerenciadorDeBaralhoVagoes = GerenciadorBaralhoVagoes()
+        self.jogo.gerenciadorDeBaralhoBilhetes = GerenciadorBaralhoBilhetes()
         self.jogo.descarteManager = DescarteManager(
-            pilha_descarte=self.jogo.gerenciadorDeBaralho.descarteVagoes
+            pilha_descarte=self.jogo.gerenciadorDeBaralhoVagoes.descarteVagoes
         )
-        self.jogo.gerenciadorFimDeJogo.resetar()
-        self.jogo.gerenciadorFimDeJogo.total_jogadores = len(self.jogo.gerenciadorDeTurnos.jogadores)
+        self.jogo.estado.gerenciador_fim.resetar()
+        self.jogo.estado.gerenciador_fim.total_jogadores = len(self.jogo.gerenciadorDeTurnos.jogadores)
         self.jogo.pathfinder = VerificadorBilhetes()  # Inicializa verificador de bilhetes
 
         # Distribui 4 cartas iniciais para cada jogador (regra oficial)
@@ -45,7 +47,7 @@ class JogoInicializador:
         if self.jogo.tabuleiro.validador_duplas:
             self.jogo.tabuleiro.validador_duplas.numero_jogadores = len(self.jogo.gerenciadorDeTurnos.jogadores)
 
-        self.jogo.iniciado = True
+        self.jogo.estado.iniciado = True
 
     def _configurar_tabuleiro_padrao(self):
         """Popula o tabuleiro com o mapa brasileiro padrão."""
@@ -55,7 +57,7 @@ class JogoInicializador:
         self.jogo.rotasDuplas = list(rotas_duplas)
 
         if rotas_duplas:
-            validador = ValidadorRotasDuplas(
+            validador = RotaDuplaValidator(
                 numero_jogadores=len(self.jogo.gerenciadorDeTurnos.jogadores)
             )
             for rota_id_a, rota_id_b in rotas_duplas:
@@ -72,7 +74,7 @@ class JogoInicializador:
         """
         for jogador in self.jogo.gerenciadorDeTurnos.jogadores:
             for _ in range(CARTAS_INICIAIS):
-                carta = self.jogo.gerenciadorDeBaralho.comprarCartaVagaoViewer(visivel=False)
+                carta = self.jogo.gerenciadorDeBaralhoVagoes.comprarCartaVagaoViewer(visivel=False)
                 if carta:
                     jogador.comprarCartaVagao(carta)
 
@@ -85,8 +87,8 @@ class JogoInicializador:
         Os bilhetes recusados são devolvidos ao FINAL do baralho
         """
         for jogador in self.jogo.gerenciadorDeTurnos.jogadores:
-            bilhetes = self.jogo.gerenciadorDeBaralho.comprarBilhetes()
+            bilhetes = self.jogo.gerenciadorDeBaralhoBilhetes.comprar()
             # Armazena os bilhetes pendentes de escolha para este jogador
-            self.jogo.bilhetesPendentesEscolha[jogador.id] = bilhetes
+            self.jogo.estado.bilhetes_state.definir_pendentes_escolha(jogador.id, bilhetes)
 
         print(f" Distribuídos 3 bilhetes iniciais para {len(self.jogo.gerenciadorDeTurnos.jogadores)} jogadores (aguardando escolha)")

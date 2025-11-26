@@ -1,5 +1,5 @@
 """
-Testes para EntityFormatters e ResponseAssembler
+Testes para EntityFormatters e Assemblers
 
 Garante formatação consistente e correta de entidades do domínio.
 """
@@ -13,7 +13,8 @@ root_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(root_dir))
 
 from app.shared.formatters import EntityFormatters
-from app.shared.response_assembler import ResponseAssembler
+from app.shared.message_builder import MessageBuilder
+from app.shared.assemblers import GameCreationAssembler
 from app.core.domain.entities.carta_vagao import CartaVagao
 from app.core.domain.entities.cor import Cor
 from app.core.domain.entities.bilhete_destino import BilheteDestino
@@ -94,7 +95,7 @@ class TestEntityFormatters:
     
     def test_formatar_rotas_bilhetes_vazio(self):
         """Testa formatação de lista vazia de bilhetes"""
-        resultado = EntityFormatters.formatar_rotas_bilhetes([])
+        resultado = MessageBuilder.formatar_rotas_bilhetes([])
         assert resultado == ""
     
     def test_formatar_rotas_bilhetes_multiplos(self):
@@ -107,7 +108,7 @@ class TestEntityFormatters:
         destino2 = get_cidade("SALVADOR")
         bilhete2 = BilheteDestino(cidadeOrigem=origem2, cidadeDestino=destino2, pontos=12)
         
-        resultado = EntityFormatters.formatar_rotas_bilhetes([bilhete1, bilhete2])
+        resultado = MessageBuilder.formatar_rotas_bilhetes([bilhete1, bilhete2])
         
         assert "Rio de Janeiro → Porto Alegre" in resultado
         assert "Brasília → Salvador" in resultado
@@ -119,7 +120,7 @@ class TestEntityFormatters:
         destino = get_cidade("SALVADOR")
         bilhete = BilheteDestino(cidadeOrigem=origem, cidadeDestino=destino, pontos=10)
         
-        resultado = EntityFormatters.criar_mensagem_compra_bilhetes(
+        resultado = MessageBuilder.criar_mensagem_compra_bilhetes(
             jogador_nome="João",
             bilhetes_escolhidos=[bilhete],
             quantidade_recusados=2
@@ -155,8 +156,8 @@ class TestEntityFormatters:
         assert resultado["cartas"][0]["cor"] == "verde"
 
 
-class TestResponseAssembler:
-    """Testes para ResponseAssembler"""
+class TestGameCreationAssembler:
+    """Testes para GameCreationAssembler"""
     
     def test_montar_criacao_jogo_simples(self):
         """Testa montagem de resposta de criação de jogo"""
@@ -165,15 +166,18 @@ class TestResponseAssembler:
         class MockGerenciador:
             jogadores = [jogador1]
         
-        class MockJogo:
-            id = "game-123"
-            gerenciadorDeTurnos = MockGerenciador()
+        class MockEstado:
             iniciado = False
             finalizado = False
         
+        class MockJogo:
+            id = "game-123"
+            gerenciadorDeTurnos = MockGerenciador()
+            estado = MockEstado()
+        
         jogo = MockJogo()
         
-        resultado = ResponseAssembler.montar_criacao_jogo(jogo, incluir_jogadores_detalhados=False)
+        resultado = GameCreationAssembler.montar_criacao_jogo(jogo, incluir_jogadores_detalhados=False)
         
         assert resultado["game_id"] == "game-123"
         assert resultado["numero_jogadores"] == 1
@@ -187,9 +191,12 @@ class TestResponseAssembler:
 @pytest.fixture
 def jogo_mock():
     """Fixture de jogo mock para testes"""
-    class MockJogo:
-        id = "game-test"
+    class MockEstado:
         iniciado = True
         finalizado = False
+    
+    class MockJogo:
+        id = "game-test"
+        estado = MockEstado()
     
     return MockJogo()

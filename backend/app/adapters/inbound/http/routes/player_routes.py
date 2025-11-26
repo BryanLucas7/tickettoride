@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from .....application.services.card_draw_service import CardDrawService
 from .....application.services.ticket_preview_service import TicketPreviewService
 from .....shared.formatters import EntityFormatters
-from .....shared.response_assembler import ResponseAssembler
+from .....shared.assemblers import PlayerHandAssembler
 from .....shared.persistence_decorator import auto_save_game
 from .....shared.request_context import PlayerRequestContext, get_player_context
 
@@ -41,8 +41,8 @@ def get_player_tickets(
     Information Expert: Jogador conhece seus próprios bilhetes
     Refatoração DRY: Usa PlayerRequestContext para eliminar boilerplate
     """
-    # Usar ResponseAssembler para montar mão do jogador (apenas bilhetes)
-    mao = ResponseAssembler.montar_mao_jogador(
+    # Usar PlayerHandAssembler para montar mão do jogador (migrado de ResponseAssembler)
+    mao = PlayerHandAssembler.montar_mao_completa(
         jogo=ctx.jogo,
         jogador=ctx.jogador,
         incluir_bilhetes=True,

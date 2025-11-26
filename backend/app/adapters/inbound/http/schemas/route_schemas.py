@@ -4,14 +4,34 @@ Route Schemas - Schemas relacionados às rotas do tabuleiro
 Contém requests e responses para conquista e consulta de rotas.
 """
 
-from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
+from pydantic import BaseModel, ConfigDict, field_validator
+from typing import List, Optional, Union
 
 
 class ConquistarRotaRequest(BaseModel):
     """Request para conquistar uma rota"""
     rota_id: str
     cartas_usadas: List[str]  # Lista de cores como strings
+    
+    @field_validator('cartas_usadas', mode='before')
+    @classmethod
+    def normalizar_cartas(cls, v):
+        """
+        Aceita cartas tanto como strings quanto como objetos {cor: string}.
+        Normaliza para lista de strings.
+        """
+        if not isinstance(v, list):
+            return v
+        
+        resultado = []
+        for item in v:
+            if isinstance(item, str):
+                resultado.append(item)
+            elif isinstance(item, dict) and 'cor' in item:
+                resultado.append(item['cor'])
+            else:
+                resultado.append(str(item))
+        return resultado
     
     model_config = ConfigDict(
         json_schema_extra={

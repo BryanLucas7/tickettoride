@@ -1,4 +1,11 @@
 """
+DEPRECATED: Este módulo foi integrado em ConquistaRotaProcessor.
+
+A lógica foi movida para:
+    app.core.services.conquista_rota_processor.ConquistaRotaProcessor._executar_conquista_fisica()
+
+Este arquivo é mantido temporariamente para compatibilidade com código legado,
+mas deve ser removido em versão futura.
 
 Serviço para processar conquista de rota completa.
 
@@ -7,6 +14,7 @@ GRASP Low Coupling: Separa lógica de descarte da UI
 
 Pure Fabrication: Classe auxiliar que não representa conceito do domínio
 """
+import warnings
 
 from typing import List, TYPE_CHECKING
 from ..entities.carta_vagao import CartaVagao
@@ -18,6 +26,8 @@ if TYPE_CHECKING:
 
 class ConquistaRotaService:
     """
+    DEPRECATED: Use ConquistaRotaProcessor._executar_conquista_fisica() ao invés.
+    
     Serviço para processar conquista de rota completa.
     
     GRASP Controller: Coordena ações de conquista de rota
@@ -29,7 +39,10 @@ class ConquistaRotaService:
     @staticmethod
     def conquistar_rota(jogador, rota, cartas_usadas: List[CartaVagao], 
                        descarte_manager: 'DescarteManager') -> dict:
-        """Processa conquista completa de rota
+        """
+        DEPRECATED: Esta funcionalidade foi movida para ConquistaRotaProcessor.
+        
+        Processa conquista completa de rota
         
         Args:
             jogador: Jogador que está conquistando
@@ -48,6 +61,12 @@ class ConquistaRotaService:
             
         GRASP Controller: Coordena validação, descarte e remoção de trens
         """
+        warnings.warn(
+            "ConquistaRotaService.conquistar_rota() está deprecated. "
+            "Use ConquistaRotaProcessor._executar_conquista_fisica() ao invés.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         
         # 1. Valida se jogador tem trens suficientes
         trens_necessarios = rota.comprimento

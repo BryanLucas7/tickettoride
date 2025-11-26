@@ -1,0 +1,206 @@
+/**
+ * Testes para useGameSetup hook
+ * 
+ * NOTA: Este arquivo está preparado para quando Jest/Vitest for configurado.
+ * Para executar os testes, adicione ao package.json:
+ * 
+ * npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
+ * 
+ * E adicione ao package.json scripts:
+ * "test": "vitest"
+ * "test:coverage": "vitest --coverage"
+ * 
+ * @module tests/hooks/useGameSetup.test
+ */
+
+// Tipos inline para documentação - remover quando instalar vitest
+type MockFn = ReturnType<typeof vi.fn>
+declare const describe: (name: string, fn: () => void) => void
+declare const it: (name: string, fn: () => void | Promise<void>) => void
+declare const expect: (value: unknown) => {
+  toBe: (expected: unknown) => void
+  toBeNull: () => void
+  toHaveLength: (length: number) => void
+  toHaveBeenCalledWith: (...args: unknown[]) => void
+  toContain: (substring: string) => void
+  rejects: { toThrow: () => Promise<void> }
+}
+declare const vi: {
+  fn: () => MockFn
+  clearAllMocks: () => void
+  restoreAllMocks: () => void
+}
+declare const beforeEach: (fn: () => void) => void
+declare const afterEach: (fn: () => void) => void
+
+// Quando vitest estiver instalado, descomente:
+// import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+// import { renderHook, act, waitFor } from '@testing-library/react'
+// import { useGameSetup } from '@/hooks/useGameSetup'
+
+// Mock do fetch global
+const mockFetch = vi.fn()
+global.fetch = mockFetch
+
+// Mock do localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+}
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+
+describe('useGameSetup', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    localStorageMock.getItem.mockReturnValue(null)
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  describe('Estado inicial', () => {
+    it('deve iniciar com criandoJogo false', () => {
+      const { result } = renderHook(() => useGameSetup())
+      
+      expect(result.current.criandoJogo).toBe(false)
+    })
+
+    it('deve iniciar com erro null', () => {
+      const { result } = renderHook(() => useGameSetup())
+      
+      expect(result.current.erro).toBeNull()
+    })
+  })
+
+  describe('criarJogo', () => {
+    it('deve criar jogo com sucesso', async () => {
+      const mockResponse = {
+        game_id: 'game-123',
+        jogadores: [
+          { id: 'j1', nome: 'Jogador 1', cor: 'vermelho' },
+          { id: 'j2', nome: 'Jogador 2', cor: 'azul' }
+        ]
+      }
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockResponse)
+      })
+
+      const { result } = renderHook(() => useGameSetup())
+
+      let gameResult: Awaited<ReturnType<typeof result.current.criarJogo>>
+
+      await act(async () => {
+        gameResult = await result.current.criarJogo([
+          { nome: 'Jogador 1', cor: 'vermelho' },
+          { nome: 'Jogador 2', cor: 'azul' }
+        ])
+      })
+
+      expect(gameResult!.gameId).toBe('game-123')
+      expect(gameResult!.jogadores).toHaveLength(2)
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('gameId', 'game-123')
+    })
+
+    it('deve definir criandoJogo como true durante a criação', async () => {
+      mockFetch.mockImplementation(() => 
+        new Promise(resolve => setTimeout(() => resolve({
+          ok: true,
+          json: () => Promise.resolve({ game_id: 'game-123', jogadores: [] })
+        }), 100))
+      )
+
+      const { result } = renderHook(() => useGameSetup())
+
+      let promise: Promise<unknown>
+      act(() => {
+        promise = result.current.criarJogo([
+          { nome: 'Jogador 1', cor: 'vermelho' },
+          { nome: 'Jogador 2', cor: 'azul' }
+        ])
+      })
+
+      expect(result.current.criandoJogo).toBe(true)
+
+      await act(async () => {
+        await promise
+      })
+
+      expect(result.current.criandoJogo).toBe(false)
+    })
+
+    it('deve tratar erro de rede', async () => {
+      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+
+      const { result } = renderHook(() => useGameSetup())
+
+      await expect(
+        act(async () => {
+          await result.current.criarJogo([
+            { nome: 'Jogador 1', cor: 'vermelho' },
+            { nome: 'Jogador 2', cor: 'azul' }
+          ])
+        })
+      ).rejects.toThrow()
+
+      expect(result.current.erro).toContain('Network error')
+    })
+
+    it('deve tratar erro de resposta HTTP', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500
+      })
+
+      const { result } = renderHook(() => useGameSetup())
+
+      await expect(
+        act(async () => {
+          await result.current.criarJogo([
+            { nome: 'Jogador 1', cor: 'vermelho' },
+            { nome: 'Jogador 2', cor: 'azul' }
+          ])
+        })
+      ).rejects.toThrow()
+
+      expect(result.current.erro).toContain('500')
+    })
+  })
+
+  describe('limparDadosAnteriores', () => {
+    it('deve limpar gameId e jogadores do localStorage', () => {
+      const { result } = renderHook(() => useGameSetup())
+
+      act(() => {
+        result.current.limparDadosAnteriores()
+      })
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('gameId')
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('jogadores')
+    })
+  })
+
+  describe('salvarDadosJogo', () => {
+    it('deve salvar gameId e jogadores no localStorage', () => {
+      const { result } = renderHook(() => useGameSetup())
+
+      const jogadores = [
+        { id: 'j1', nome: 'Jogador 1', cor: 'vermelho' }
+      ]
+
+      act(() => {
+        result.current.salvarDadosJogo('game-123', jogadores)
+      })
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('gameId', 'game-123')
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        'jogadores', 
+        JSON.stringify(jogadores)
+      )
+    })
+  })
+})

@@ -1,0 +1,22 @@
+{
+  "threshold": 5,
+  "reporters": ["html", "console"],
+  "output": "./reports/jscpd",
+  "ignore": [
+    "**/node_modules/**",
+    "**/.venv/**",
+    "**/__pycache__/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**",
+    "**/*.min.*",
+    "**/reports/**"
+  ],
+  "format": ["python", "typescript", "tsx", "javascript", "jsx"],
+  "absolute": true,
+  "gitignore": true,
+  "minLines": 5,
+  "minTokens": 50,
+  "skipComments": true
+}

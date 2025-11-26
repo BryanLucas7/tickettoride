@@ -1,1 +1,6 @@
-{}
+{
+  "app/jogo/page.tsx -> @/features/game/components/TelaFimJogo": {
+    "id": "app/jogo/page.tsx -> @/features/game/components/TelaFimJogo",
+    "files": []
+  }
+}

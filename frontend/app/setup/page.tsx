@@ -1,178 +1,91 @@
 "use client"
 
-import { useState } from "react"
+/**
+ * SetupPage - Configuração inicial da partida
+ *
+ * Agora o anfitrião define apenas o número de jogadores.
+ * Cada jogador entra depois via link e assume seu assento.
+ */
+
+import { useCallback, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
+import { CORES_DISPONIVEIS } from "@/hooks/usePlayerSetup"
+import { useGameSetup } from "@/hooks/useGameSetup"
 
 export default function SetupPage() {
   const router = useRouter()
-  const [jogadores, setJogadores] = useState([{ nome: "", cor: "VERMELHO" }])
+  const [numeroJogadores, setNumeroJogadores] = useState(2)
+  const { criarJogo, criandoJogo } = useGameSetup()
 
-  const cores = ["VERMELHO", "AZUL", "VERDE", "AMARELO", "PRETO"]
+  const jogadoresPadrao = useMemo(
+    () =>
+      Array.from({ length: numeroJogadores }, (_, i) => ({
+        nome: `Jogador ${i + 1}`,
+        cor: CORES_DISPONIVEIS[i % CORES_DISPONIVEIS.length]
+      })),
+    [numeroJogadores]
+  )
 
-  const adicionarJogador = () => {
-    if (jogadores.length < 5) {
-      setJogadores([...jogadores, { nome: "", cor: cores[jogadores.length] }])
-    }
-  }
-
-  const removerJogador = (index: number) => {
-    if (jogadores.length > 2) {
-      setJogadores(jogadores.filter((_, i) => i !== index))
-    }
-  }
-
-  const atualizarJogador = (index: number, campo: string, valor: string) => {
-    const novosJogadores = [...jogadores]
-    novosJogadores[index] = { ...novosJogadores[index], [campo]: valor }
-    setJogadores(novosJogadores)
-  }
-
-  const iniciarJogo = async () => {
-  const todosPreenchidos = jogadores.every((j) => j.nome.trim() !== "")
-  if (!todosPreenchidos) {
-    alert("Por favor, preencha o nome de todos os jogadores")
-    return
-  }
-
-  if (jogadores.length < 2) {
-    alert("É necessário pelo menos 2 jogadores")
-    return
-  }
-
-  // Validação de cores duplicadas
-  const coresUsadas = jogadores.map(j => j.cor)
-  const coresDuplicadas = coresUsadas.filter((cor, index) => coresUsadas.indexOf(cor) !== index)
-  if (coresDuplicadas.length > 0) {
-    alert("Cada jogador deve ter uma cor diferente! Cores duplicadas: " + coresDuplicadas.join(", "))
-    return
-  }
-
-  try {
-    // LIMPAR DADOS ANTIGOS ANTES DE CRIAR NOVO JOGO
-    console.log('🧹 Limpando dados antigos do localStorage...')
-    localStorage.removeItem("gameId")
-    localStorage.removeItem("jogadores")
-    
-    // Detectar se está no Codespace ou local
-    const isCodespace = window.location.hostname.includes('app.github.dev')
-    const backendPort = '8000'
-    
-    let backendUrl
-    if (isCodespace) {
-      const baseUrl = window.location.hostname.replace(/-300[0-9]/, `-${backendPort}`)
-      backendUrl = `${window.location.protocol}//${baseUrl}`
-    } else {
-      backendUrl = `http://localhost:${backendPort}`
+  const iniciarJogo = useCallback(async () => {
+    if (numeroJogadores < 2 || numeroJogadores > 5) {
+      alert("Escolha entre 2 e 5 jogadores.")
+      return
     }
 
-    // Criar jogo no backend
-    console.log('🎮 Criando novo jogo em:', backendUrl)
-    const response = await fetch(`${backendUrl}/games`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        numero_jogadores: jogadores.length,
-        jogadores: jogadores.map(j => ({
-          nome: j.nome,
-          cor: j.cor
-        }))
-      })
-    })
-
-    if (!response.ok) {
-      throw new Error(`Erro ao criar jogo: ${response.status}`)
+    try {
+      const resultado = await criarJogo(jogadoresPadrao)
+      router.push(`/entrar?gameId=${resultado.gameId}`)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido"
+      alert(errorMessage)
     }
-
-    const gameData = await response.json()
-    console.log('✅ Jogo criado com sucesso:', gameData)
-
-    // Salvar gameId e jogadores com IDs no localStorage
-    localStorage.setItem("gameId", gameData.game_id)
-    localStorage.setItem("jogadores", JSON.stringify(gameData.jogadores))
-    console.log('💾 Dados salvos no localStorage:', {
-      gameId: gameData.game_id,
-      numJogadores: gameData.jogadores.length
-    })
-
-    // Ir para tela de bilhetes
-    router.push("/bilhetes-destino")
-  } catch (error) {
-    console.error("❌ Erro ao criar jogo:", error)
-    alert(`Erro ao criar jogo: ${error.message}\n\nCertifique-se de que o backend Python está rodando na porta 8000`)
-  }
-}
+  }, [numeroJogadores, jogadoresPadrao, router, criarJogo])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
       <div className="container mx-auto px-4 max-w-2xl">
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Configurar Jogo</h1>
-          <p className="text-gray-600 mb-8">Adicione de 2 a 5 jogadores para começar</p>
-
-          <div className="space-y-4 mb-6">
-            {jogadores.map((jogador, index) => (
-              <div key={index} className="flex gap-3 items-center p-4 bg-gray-50 rounded-lg">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Jogador {index + 1}</label>
-                  <input
-                    type="text"
-                    value={jogador.nome}
-                    onChange={(e) => atualizarJogador(index, "nome", e.target.value)}
-                    placeholder="Nome do jogador"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="w-40">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Cor</label>
-                  <select
-                    value={jogador.cor}
-                    onChange={(e) => atualizarJogador(index, "cor", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {cores.map((cor) => {
-                      const corJaUsada = jogadores.some((j, i) => i !== index && j.cor === cor)
-                      return (
-                        <option key={cor} value={cor} disabled={corJaUsada}>
-                          {cor} {corJaUsada ? "(em uso)" : ""}
-                        </option>
-                      )
-                    })}
-                  </select>
-                </div>
-                {jogadores.length > 2 && (
-                  <button
-                    onClick={() => removerJogador(index)}
-                    className="mt-6 px-3 py-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                  >
-                    Remover
-                  </button>
-                )}
-              </div>
-            ))}
+        <div className="bg-white rounded-lg shadow-xl p-8 space-y-6">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Configurar partida</h1>
+            <p className="text-gray-600">
+              Defina apenas o número de jogadores. Cada pessoa abrirá uma aba e entrará pelo link
+              gerado para escolher seu assento.
+            </p>
           </div>
 
-          <div className="flex gap-3">
-            {jogadores.length < 5 && (
-              <button
-                onClick={adicionarJogador}
-                className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors"
-              >
-                Adicionar Jogador
-              </button>
-            )}
-            <button
-              onClick={iniciarJogo}
-              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-            >
-              Iniciar Jogo
-            </button>
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+            <label className="block text-sm font-semibold text-blue-900 mb-2">
+              Quantidade de jogadores (2 a 5)
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min={2}
+                max={5}
+                value={numeroJogadores}
+                onChange={(e) => setNumeroJogadores(Number(e.target.value))}
+                className="flex-1 accent-blue-600"
+              />
+              <span className="text-lg font-bold text-blue-800 w-10 text-center">
+                {numeroJogadores}
+              </span>
+            </div>
+            <p className="text-sm text-blue-800 mt-2">
+              Jogadores gerados: {jogadoresPadrao.map((j) => j.nome).join(", ")}
+            </p>
           </div>
 
           <button
+            onClick={iniciarJogo}
+            disabled={criandoJogo}
+            className="w-full px-6 py-3 font-semibold rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white disabled:bg-blue-300"
+          >
+            {criandoJogo ? "Criando partida..." : "Criar partida e gerar link"}
+          </button>
+
+          <button
             onClick={() => router.push("/")}
-            className="mt-4 w-full px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="w-full px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
             Voltar
           </button>

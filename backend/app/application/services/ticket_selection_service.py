@@ -20,7 +20,7 @@ from ...core.domain.entities.jogo import Jogo
 from ...core.domain.entities.jogador import Jogador
 from ...shared.response_builder import ResponseBuilder
 from ...shared.formatters import EntityFormatters
-from ...shared.bilhete_helpers import BilheteHelpers
+from ...core.domain.support.bilhete_helpers import BilheteHelpers
 
 
 class TicketSelectionService:
@@ -44,7 +44,7 @@ class TicketSelectionService:
             Dict compatível com EscolhaBilhetesIniciaisResponse
             {"success": bool, "message": str|None, "player_id": str, "tickets_kept": int, ...}
         """
-        bilhetes_pendentes = jogo.bilhetesPendentesEscolha.get(jogador.id)
+        bilhetes_pendentes = jogo.estado.bilhetes_state.obter_pendentes_escolha(jogador.id)
         if not bilhetes_pendentes:
             return ResponseBuilder.error("No pending initial ticket selection for this player")
 
@@ -68,7 +68,7 @@ class TicketSelectionService:
         bilhetes_recusados = [b for b in bilhetes_pendentes if b not in bilhetes_aceitos]
 
         # Chama processamento interno do jogo
-        sucesso = jogo.escolherBilhetesIniciais(jogador.id, bilhetes_ids)
+        sucesso = jogo.bilhetes.escolherBilhetesIniciais(jogador.id, bilhetes_ids)
         if not sucesso:
             return ResponseBuilder.error("Invalid ticket selection")
 

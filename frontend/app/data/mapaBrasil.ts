@@ -1,94 +1,93 @@
 /**
- * Dados do mapa Ticket to Ride - Brasil
- * Posições das cidades no canvas (x, y em pixels)
+ * Dados visuais do mapa (apenas coordenadas e cores).
+ * A topologia (cidades/rotas) vem do backend via /map/config.
  */
 
-export const CORES = {
-  VERMELHO: '#DC2626',
-  AZUL: '#2563EB',
-  VERDE: '#16A34A',
-  AMARELO: '#FBBF24',
-  PRETO: '#1F2937',
-  LARANJA: '#EA580C',
-  ROXO: '#8B5CF6',
-  BRANCO: '#ffffffff',
-  CINZA: '#b7b7b7ff',
+import type { CorRotaString } from '@/types/game'
 
-};
-
-export interface Cidade {
+export interface CidadeApi {
   id: string;
   nome: string;
+}
+
+export interface RotaApi {
+  id: string;
+  cidadeA: string;
+  cidadeB: string;
+  cor: string;
+  comprimento: number;
+}
+
+export interface MapaApiResponse {
+  map_id?: string;
+  cidades: CidadeApi[];
+  rotas: RotaApi[];
+}
+
+export interface CidadeComCoordenadas extends CidadeApi {
   x: number;
   y: number;
 }
 
-export interface Rota {
-  id: string;
-  cidadeA: string;
-  cidadeB: string;
-  cor: keyof typeof CORES;
-  comprimento: number;
+export interface MapaComCoordenadas {
+  cidades: CidadeComCoordenadas[];
+  rotas: RotaApi[];
 }
 
-export const CIDADES: Cidade[] = [
-  { id: 'PORTO_ALEGRE', nome: 'Porto Alegre', x: 430, y: 580 },
-  //{ id: 'CURITIBA', nome: 'Curitiba', x: 420, y: 550 },
-  { id: 'BAURU', nome: 'Bauru', x: 465, y: 455 },
-  { id: 'RIO_DE_JANEIRO', nome: 'Rio de Janeiro', x: 565, y: 465 },
-  //{ id: 'BELO_HORIZONTE', nome: 'Belo Horizonte', x: 530, y: 410 },
-  //{ id: 'VITORIA', nome: 'Vitória', x: 570, y: 450 },
-  { id: 'BRASILIA', nome: 'Brasília', x: 480, y: 370 },
-  //{ id: 'GOIANIA', nome: 'Goiânia', x: 330, y: 410 },
-  { id: 'CAMPO_GRANDE', nome: 'Campo Grande', x: 385, y: 435 },
-  { id: 'CUIABA', nome: 'Cuiabá', x: 350, y: 340 },
-  { id: 'SALVADOR', nome: 'Salvador', x: 605, y: 320 },
-  { id: 'RECIFE', nome: 'Recife', x: 670, y: 240 },
-  { id: 'FORTALEZA', nome: 'Fortaleza', x: 620, y: 190 },
-  { id: 'BELEM', nome: 'Belém', x: 480, y: 140 },
-  { id: 'MANAUS', nome: 'Manaus', x: 300, y: 160 },
-  { id: 'RIO_BRANCO', nome: 'Rio Branco', x: 190, y: 280 },
-  { id: 'PALMAS', nome: 'Palmas', x: 470, y: 280 },
-];
+const CIDADE_COORDENADAS: Record<string, { x: number; y: number }> = {
+  PORTO_ALEGRE: { x: 430, y: 580 },
+  BAURU: { x: 465, y: 455 },
+  RIO_DE_JANEIRO: { x: 565, y: 465 },
+  BRASILIA: { x: 480, y: 370 },
+  CAMPO_GRANDE: { x: 385, y: 435 },
+  CUIABA: { x: 350, y: 340 },
+  SALVADOR: { x: 605, y: 320 },
+  RECIFE: { x: 670, y: 240 },
+  FORTALEZA: { x: 620, y: 190 },
+  BELEM: { x: 480, y: 140 },
+  MANAUS: { x: 300, y: 160 },
+  RIO_BRANCO: { x: 190, y: 280 },
+  PALMAS: { x: 470, y: 280 },
+};
 
-export const ROTAS: Rota[] = [
-  // Sul
-  { id: 'R01', cidadeA: 'PORTO_ALEGRE', cidadeB: 'BAURU', cor: 'VERDE', comprimento: 4 },
-  { id: 'R02', cidadeA: 'PORTO_ALEGRE', cidadeB: 'CAMPO_GRANDE', cor: 'AMARELO', comprimento: 4 },
-  
-  // Sudeste
-  { id: 'R03', cidadeA: 'BAURU', cidadeB: 'BRASILIA', cor: 'VERMELHO', comprimento: 3 },
-  { id: 'R04', cidadeA: 'BAURU', cidadeB: 'RIO_DE_JANEIRO', cor: 'AZUL', comprimento: 3 },
-  { id: 'R05', cidadeA: 'BAURU', cidadeB: 'CAMPO_GRANDE', cor: 'PRETO', comprimento: 2 },
-  { id: 'R06', cidadeA: 'RIO_DE_JANEIRO', cidadeB: 'SALVADOR', cor: 'AMARELO', comprimento: 4 },
-  { id: 'R07', cidadeA: 'RIO_DE_JANEIRO', cidadeB: 'BRASILIA', cor: 'ROXO', comprimento: 3 },
-  
-  // Centro-Oeste
+export const CORES_HEX: Record<CorRotaString | 'locomotiva', string> = {
+  vermelho: "#DC2626",
+  azul: "#2563EB",
+  verde: "#16A34A",
+  amarelo: "#FBBF24",
+  preto: "#1F2937",
+  laranja: "#EA580C",
+  roxo: "#8B5CF6",
+  branco: "#ffffff",
+  cinza: "#b7b7b7",
+  locomotiva: "#6B7280",
+};
 
-  { id: 'R08', cidadeA: 'CAMPO_GRANDE', cidadeB: 'CUIABA', cor: 'LARANJA', comprimento: 3 },
-  { id: 'R09', cidadeA: 'CAMPO_GRANDE', cidadeB: 'BRASILIA', cor: 'BRANCO', comprimento: 3 },
-  { id: 'R09B', cidadeA: 'CUIABA', cidadeB: 'BRASILIA', cor: 'PRETO', comprimento: 4 },
-  { id: 'R10', cidadeA: 'PALMAS', cidadeB: 'BRASILIA', cor: 'VERDE', comprimento: 3 },
-  { id: 'R11', cidadeA: 'PALMAS', cidadeB: 'CUIABA', cor: 'AMARELO', comprimento: 5 },
-  { id: 'R12', cidadeA: 'PALMAS', cidadeB: 'MANAUS', cor: 'ROXO', comprimento: 6 },
-  { id: 'R13', cidadeA: 'PALMAS', cidadeB: 'BELEM', cor: 'VERMELHO', comprimento: 5 },
-  { id: 'R14', cidadeA: 'PALMAS', cidadeB: 'FORTALEZA', cor: 'PRETO', comprimento: 5 },
-  { id: 'R15', cidadeA: 'PALMAS', cidadeB: 'RECIFE', cor: 'AZUL', comprimento: 5 },
-  { id: 'R16', cidadeA: 'PALMAS', cidadeB: 'SALVADOR', cor: 'LARANJA', comprimento: 4 },
-  
-  // Nordeste
-  { id: 'R17', cidadeA: 'BRASILIA', cidadeB: 'SALVADOR', cor: 'VERDE', comprimento: 4 },
-  { id: 'R18', cidadeA: 'SALVADOR', cidadeB: 'RECIFE', cor: 'BRANCO', comprimento: 4 },
-  { id: 'R19', cidadeA: 'RECIFE', cidadeB: 'FORTALEZA', cor: 'BRANCO', comprimento: 2 },
-  
-  // Norte
-  { id: 'R20', cidadeA: 'FORTALEZA', cidadeB: 'BELEM', cor: 'CINZA', comprimento: 5 },
-  { id: 'R21', cidadeA: 'BELEM', cidadeB: 'MANAUS', cor: 'CINZA', comprimento: 6 },
-  { id: 'R22', cidadeA: 'MANAUS', cidadeB: 'CUIABA', cor: 'CINZA', comprimento: 5 },
-  { id: 'R23', cidadeA: 'RIO_BRANCO', cidadeB: 'MANAUS', cor: 'LARANJA', comprimento: 5 },
-  { id: 'R24', cidadeA: 'RIO_BRANCO', cidadeB: 'CUIABA', cor: 'ROXO', comprimento: 5 },
-  
-  // Rotas duplas
-  //{ id: 'R19', cidadeA: 'PORTO_ALEGRE', cidadeB: 'CURITIBA', cor: 'AZUL', comprimento: 3 },
-  //{ id: 'R20', cidadeA: 'BAURU', cidadeB: 'RIO_DE_JANEIRO', cor: 'VERMELHO', comprimento: 2 },
-];
+type CorHex = CorRotaString | 'locomotiva';
+
+function isCorHex(cor: string): cor is CorHex {
+  return cor in CORES_HEX;
+}
+
+export function obterCorHex(cor?: string | null): string {
+  if (!cor) return CORES_HEX.cinza;
+  const normalizada = cor.toLowerCase();
+  return isCorHex(normalizada) ? CORES_HEX[normalizada] : CORES_HEX.cinza;
+}
+
+export function anexarCoordenadasMapa(apiMapa: MapaApiResponse): MapaComCoordenadas {
+  const cidades = (apiMapa.cidades || [])
+    .map((cidade) => {
+      const coords = CIDADE_COORDENADAS[cidade.id];
+      if (!coords) return null;
+      return { ...cidade, ...coords };
+    })
+    .filter(Boolean) as CidadeComCoordenadas[];
+
+  const rotas = (apiMapa.rotas || []).map((rota) => ({
+    ...rota,
+    cor: rota.cor.toLowerCase(),
+  }));
+
+  return { cidades, rotas };
+}

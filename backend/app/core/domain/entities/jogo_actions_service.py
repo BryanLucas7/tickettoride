@@ -1,3 +1,21 @@
+"""
+JogoActionsService - Serviço interno para ações gerais do jogo.
+
+NOTA ARQUITETURAL:
+Este é um "inner service" da entidade Jogo, não um serviço de aplicação.
+Está em entities/ porque:
+1. É parte intrínseca da entidade Jogo (delegação interna)
+2. Tem dependência bidirecional com Jogo (recebe self.jogo)
+3. Executa ações diretas no estado do jogo
+
+Para serviços de aplicação externos, use:
+- application/services/game_action_service.py
+
+Padrão GRASP: Controller
+Princípio SRP: Responsável por ações gerais e validação de fim de jogo
+"""
+
+
 class JogoActionsService:
     """Responsável pelas ações gerais do jogo e validações de fim."""
 
@@ -14,7 +32,7 @@ class JogoActionsService:
         jogador_atual = self.jogo.gerenciadorDeTurnos.getJogadorAtual()
 
         if acao == "comprar_carta":
-            carta = self.jogo.gerenciadorDeBaralho.comprarCartaVagaoViewer()
+            carta = self.jogo.gerenciadorDeBaralhoVagoes.comprarCartaVagaoViewer()
             if carta:
                 jogador_atual.comprarCartaVagao(carta)
 
@@ -29,10 +47,10 @@ class JogoActionsService:
                         jogador_atual.pontuacao += pontos_rota.get(rota.comprimento, 0)
 
         elif acao == "comprar_bilhetes":
-            bilhetes = self.jogo.gerenciadorDeBaralho.comprarBilhetes()
+            bilhetes = self.jogo.gerenciadorDeBaralhoBilhetes.comprar()
             aceitos = jogador_atual.comprarBilhetesDestino(bilhetes)
             nao_aceitos = [b for b in bilhetes if b not in aceitos]
-            self.jogo.gerenciadorDeBaralho.devolverBilhetes(nao_aceitos)
+            self.jogo.gerenciadorDeBaralhoBilhetes.devolver(nao_aceitos)
 
         elif acao == "passar":
             jogador_atual.passarTurno()
@@ -51,6 +69,6 @@ class JogoActionsService:
 
     def encerrar(self):
         """Encerra o jogo"""
-        self.jogo.finalizado = True
-        if self.jogo.placar:
-            self.jogo.placar.atualizarPlacar()
+        self.jogo.estado.finalizado = True
+        if self.jogo.estado.placar:
+            self.jogo.estado.placar.atualizarPlacar()

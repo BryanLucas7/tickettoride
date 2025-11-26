@@ -8,6 +8,9 @@ de múltiplos formatos de resposta espalhados pelo sistema:
 - {"success": False} (inglês)
 - Mix de ambos
 
+REFATORAÇÃO DRY: Este módulo agora usa as funções base de 
+core/domain/support/responses.py para evitar duplicação.
+
 Responsabilidades:
 - Criar respostas de sucesso padronizadas
 - Criar respostas de erro padronizadas
@@ -17,6 +20,7 @@ Responsabilidades:
 Padrões aplicados:
 - Pure Fabrication (GRASP): Classe artificial para responsabilidade não natural
 - Creator (GRASP): Centraliza criação de estruturas de resposta
+- Protected Variations (GRASP): Usa TypedDict para contratos explícitos
 
 Quando usar cada método:
 1. ResponseBuilder.success() - Resposta simples sem turno
@@ -26,10 +30,18 @@ Quando usar cada método:
 
 from typing import Any, Dict, Optional
 
+from ..core.domain.support.responses import (
+    success_response as _base_success,
+    error_response as _base_error,
+)
+from ..core.domain.support.types import ResultadoTurno
+
 
 class ResponseBuilder:
     """
     Construtor de respostas HTTP padronizadas.
+    
+    REFATORAÇÃO DRY: Delega para funções base em core/domain/support/responses.py
     
     Todas as respostas seguem o formato base:
     {
@@ -54,6 +66,8 @@ class ResponseBuilder:
         """
         Cria uma resposta de sucesso padronizada.
         
+        REFATORAÇÃO DRY: Delega para _base_success de core/domain/support/responses.py
+        
         Args:
             message: Mensagem descritiva da ação realizada
             data: Dados adicionais a incluir na resposta (opcional)
@@ -72,25 +86,21 @@ class ResponseBuilder:
             >>> ResponseBuilder.success("Bilhetes sorteados", data={"bilhetes": [...]})
             {"success": True, "message": "Bilhetes sorteados", "bilhetes": [...]}
         """
-        response = {
-            "success": True,
-            "message": message
-        }
-        
-        # Se data foi fornecido, mescla seus campos na resposta
+        # Mescla data e kwargs
+        all_kwargs = {}
         if data:
-            response.update(data)
-        
-        # Adiciona campos extras fornecidos via kwargs
+            all_kwargs.update(data)
         if kwargs:
-            response.update(kwargs)
-            
-        return response
+            all_kwargs.update(kwargs)
+        
+        return _base_success(message, **all_kwargs)
     
     @staticmethod
     def error(message: str, code: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """
         Cria uma resposta de erro padronizada.
+        
+        REFATORAÇÃO DRY: Delega para _base_error de core/domain/support/responses.py
         
         Args:
             message: Mensagem descritiva do erro
@@ -110,35 +120,30 @@ class ResponseBuilder:
             >>> ResponseBuilder.error("Cartas insuficientes", cartas_necessarias=3)
             {"success": False, "message": "Cartas insuficientes", "cartas_necessarias": 3}
         """
-        response = {
-            "success": False,
-            "message": message
-        }
-        
         if code:
-            response["code"] = code
+            kwargs["code"] = code
             
-        if kwargs:
-            response.update(kwargs)
-            
-        return response
+        return _base_error(message, **kwargs)
     
     @staticmethod
     def success_with_turn(
         message: str,
-        resultado_turno: Dict[str, Any],
+        resultado_turno: ResultadoTurno,
         **kwargs
     ) -> Dict[str, Any]:
         """
         Cria resposta de sucesso incluindo informações de fim de turno.
+        
+        REFATORAÇÃO DRY: Usa _base_success como base e adiciona campos de turno.
         
         Centraliza padrão duplicado em RouteConquestService, TicketPurchaseService
         e outros services que precisam passar turno automaticamente.
         
         Args:
             message: Mensagem descritiva da ação realizada
-            resultado_turno: Dict retornado por GameActionService.passar_turno_e_verificar_fim()
-                            Deve conter: proximo_jogador, jogo_terminou, mensagem_fim
+            resultado_turno: Tipado como ResultadoTurno (TypedDict) para garantir
+                            contrato explícito. Deve conter: proximo_jogador, 
+                            jogo_terminou, mensagem_fim
             **kwargs: Campos específicos da ação (points, tickets_kept, etc.)
             
         Returns:
@@ -162,37 +167,17 @@ class ResponseBuilder:
                 "points": 4,
                 "trains_remaining": 10
             }
-            
-            >>> ResponseBuilder.success_with_turn(
-            ...     "Bilhetes comprados",
-            ...     resultado_turno={"proximo_jogador": "3", "jogo_terminou": True, "mensagem_fim": "Última rodada!"},
-            ...     tickets_kept=2,
-            ...     tickets_returned=1
-            ... )
-            {
-                "success": True,
-                "message": "Bilhetes comprados",
-                "turn_completed": True,
-                "turno_passado": True,
-                "next_player": "3",
-                "jogo_terminou": True,
-                "mensagem_fim": "Última rodada!",
-                "tickets_kept": 2,
-                "tickets_returned": 1
-            }
         """
-        response = {
-            "success": True,
-            "message": message,
+        # Campos específicos de turno
+        turn_kwargs = {
             "turn_completed": True,
             "turno_passado": True,
             "next_player": resultado_turno["proximo_jogador"],
             "jogo_terminou": resultado_turno["jogo_terminou"],
-            "mensagem_fim": resultado_turno["mensagem_fim"]
+            "mensagem_fim": resultado_turno["mensagem_fim"],
         }
         
-        # Adiciona campos específicos da ação
-        if kwargs:
-            response.update(kwargs)
+        # Mescla campos de turno com kwargs adicionais
+        turn_kwargs.update(kwargs)
         
-        return response
+        return _base_success(message, **turn_kwargs)

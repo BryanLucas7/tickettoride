@@ -1,58 +1,63 @@
+"""
+Gerenciador de Baralho de Vagões.
+
+Padrão GRASP: Information Expert - possui os dados das cartas de vagão
+Padrão GRASP: Pure Fabrication - separa responsabilidade de gerenciamento de cartas
+Princípio SRP: Gerencia APENAS cartas de vagão. Bilhetes são gerenciados
+separadamente por GerenciadorBaralhoBilhetes.
+
+Refatoração SRP: 
+- CartaVagaoFactory: extraída para factories/carta_vagao_factory.py
+- GerenciadorBaralhoVagoes: responsável pelo gerenciamento do baralho
+- LocomotivaResetRule: regra de reset extraída (Strategy Pattern)
+"""
+
 from dataclasses import dataclass, field
-from app.core.domain.entities.baralho import Baralho
-from app.core.domain.entities.carta_vagao import CartaVagao
-from app.core.domain.entities.bilhete_destino import BilheteDestino, BILHETES_DESTINO
-from app.core.domain.entities.cor import Cor
-from typing import List
+from typing import List, Optional
+
+from ..entities.baralho import Baralho
+from ..entities.carta_vagao import CartaVagao
+from ..rules import LocomotivaResetRule, CartasAbertasRule
+from ..factories import CartaVagaoFactory
+
 
 @dataclass
 class GerenciadorBaralhoVagoes:
+    """
+    Gerenciador dedicado para cartas de vagão.
+    
+    Responsabilidades (SRP - apenas gerenciamento):
+    - Gerenciar as 5 cartas abertas
+    - Comprar cartas do baralho fechado ou abertas
+    - Controlar pilha de descarte
+    - Reabastecer baralho quando vazio
+    
+    NOTA: Criação de cartas delegada para CartaVagaoFactory (SRP).
+    NOTA: Bilhetes de destino são gerenciados separadamente por
+    GerenciadorBaralhoBilhetes (SRP).
+    NOTA: Regra de reset por locomotivas delegada para LocomotivaResetRule (SRP/Strategy).
+    """
     baralhoVagoes: Baralho = field(default_factory=Baralho)
     descarteVagoes: List[CartaVagao] = field(default_factory=list)
-    cartasAbertas: List[CartaVagao] = field(default_factory=list)  # 5 cartas visíveis na mesa
-    baralhoBilhetes: Baralho = field(default_factory=Baralho)  # Baralho de bilhetes de destino
+    cartasAbertas: List[CartaVagao] = field(default_factory=list)
+    _reset_rule: Optional[CartasAbertasRule] = field(default=None, repr=False)
 
     def __post_init__(self):
-        """Inicializa os baralhos de vagões e bilhetes após a criação"""
+        """Inicializa os baralhos após a criação."""
+        # Strategy Pattern: usa regra padrão se não injetada
+        if self._reset_rule is None:
+            self._reset_rule = LocomotivaResetRule()
+        
         self.inicializarBaralhoVagoes()
         self.inicializarCartasAbertas()
-        self.inicializarBaralhoBilhetes()
 
     def inicializarBaralhoVagoes(self):
-        """Cria as 110 cartas de vagão do jogo"""
-        contador_id = 1
-
-        # Cores normais: 12 cartas de cada (8 cores x 12 = 96 cartas)
-        cores = [
-            Cor.ROXO,
-            Cor.BRANCO,
-            Cor.AZUL,
-            Cor.AMARELO,
-            Cor.LARANJA,
-            Cor.PRETO,
-            Cor.VERMELHO,
-            Cor.VERDE
-        ]
-
-        for cor in cores:
-            for _ in range(12):
-                carta = CartaVagao(
-                    id=contador_id,
-                    cor=cor,
-                    ehLocomotiva=False
-                )
-                self.baralhoVagoes.adicionar(carta)
-                contador_id += 1
-
-        # Locomotivas: 14 cartas coringa dedicadas
-        for _ in range(14):
-            carta = CartaVagao(
-                id=contador_id,
-                cor=Cor.LOCOMOTIVA,
-                ehLocomotiva=True
-            )
+        """Cria as 110 cartas de vagão do jogo usando Factory."""
+        # Delega criação para CartaVagaoFactory (SRP)
+        cartas, _ = CartaVagaoFactory.criar_baralho_completo()
+        
+        for carta in cartas:
             self.baralhoVagoes.adicionar(carta)
-            contador_id += 1
 
         # Embaralha o baralho após criar todas as cartas
         self.baralhoVagoes.embaralhar()
@@ -80,24 +85,30 @@ class GerenciadorBaralhoVagoes:
 
         Regra oficial: Se 3 ou mais locomotivas aparecerem nas 5 cartas abertas,
         todas são descartadas e 5 novas cartas são reveladas
+        
+        Refatoração SRP: Delega verificação para LocomotivaResetRule (Strategy Pattern).
+        A regra pode ser substituída via injeção de dependência para testes.
         """
+        # Strategy Pattern: delega decisão para regra injetada
+        if not self._reset_rule.deve_resetar(self.cartasAbertas):
+            return
+        
+        # Executa reset quando regra determina necessário
         locomotivas = sum(1 for carta in self.cartasAbertas if carta.ehLocomotiva)
+        print(f"⚠️  {locomotivas} locomotivas abertas! Descartando todas e revelando 5 novas...")
 
-        if locomotivas >= 3:
-            print(f"⚠️  {locomotivas} locomotivas abertas! Descartando todas e revelando 5 novas...")
+        # Descarta todas as cartas abertas
+        self.descarteVagoes.extend(self.cartasAbertas)
+        self.cartasAbertas.clear()
 
-            # Descarta todas as cartas abertas
-            self.descarteVagoes.extend(self.cartasAbertas)
-            self.cartasAbertas.clear()
+        # Revela 5 novas cartas
+        for _ in range(5):
+            carta = self.baralhoVagoes.comprar()
+            if carta:
+                self.cartasAbertas.append(carta)
 
-            # Revela 5 novas cartas
-            for _ in range(5):
-                carta = self.baralhoVagoes.comprar()
-                if carta:
-                    self.cartasAbertas.append(carta)
-
-            # Verifica novamente (recursivo, caso apareçam 3+ locomotivas novamente)
-            self._verificarLocomotivas()
+        # Verifica novamente (recursivo, caso apareçam 3+ locomotivas novamente)
+        self._verificarLocomotivas()
 
     def comprarCartaVagaoViewer(self, visivel: bool = True) -> CartaVagao:
         """Compra uma carta vagão do baralho fechado
@@ -157,43 +168,8 @@ class GerenciadorBaralhoVagoes:
         return self.cartasAbertas[:]
 
     def reabastecerBaralhoVagaoVazio(self):
-        """Reabastece o baralho de vagões com as cartas do descarte"""
+        """Reabastece o baralho de vagões com as cartas do descarte."""
         if not self.baralhoVagoes.cartas and self.descarteVagoes:
             self.baralhoVagoes.cartas = self.descarteVagoes[:]
             self.descarteVagoes.clear()
             self.baralhoVagoes.embaralhar()
-
-    # === MÉTODOS PARA BILHETES DE DESTINO ===
-
-    def inicializarBaralhoBilhetes(self):
-        """Cria o baralho com os 30 bilhetes de destino do jogo"""
-        # Adiciona todos os bilhetes predefinidos
-        for bilhete in BILHETES_DESTINO:
-            self.baralhoBilhetes.adicionar(bilhete)
-
-        # Embaralha o baralho de bilhetes
-        self.baralhoBilhetes.embaralhar()
-
-        print(f"[OK] Baralho de bilhetes criado: {len(self.baralhoBilhetes.cartas)} bilhetes")
-
-    def comprarBilhetes(self) -> List[BilheteDestino]:
-        """Compra bilhetes de destino do baralho
-        
-        Returns:
-            Lista com 3 bilhetes de destino
-        """
-        bilhetes = []
-        for _ in range(3):  # Normalmente são 3 bilhetes
-            bilhete = self.baralhoBilhetes.comprar()
-            if bilhete:
-                bilhetes.append(bilhete)
-        return bilhetes
-
-    def devolverBilhetes(self, bilhetes: List[BilheteDestino]):
-        """Devolve bilhetes não aceitos ao fundo do baralho
-        
-        Args:
-            bilhetes: Lista de bilhetes a serem devolvidos
-        """
-        for bilhete in bilhetes:
-            self.baralhoBilhetes.adicionar(bilhete, endOf=True)  # Adiciona ao FINAL do baralho
