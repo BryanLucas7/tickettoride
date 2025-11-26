@@ -10,7 +10,9 @@ venv/
 backend/venv/
 **/__pycache__/
 **/.pytest_cache/
+.pytest_cache/
 *.py[cod]
+.ruff_cache/
 
 # next.js
 /.next/
@@ -40,6 +42,12 @@ yarn-error.log*
 next-env.d.ts
 backend/app/.games_cache.pkl
 backend/app/.games_cache.pkl.bak
+
+# reports / code-quality outputs
+/reports/
+reports/
+.jscpd-report/
+*.jscpd-report.json
 
 # local playgrounds / scripts
 backend/app/main.py
